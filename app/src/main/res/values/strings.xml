@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Saeta</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="StrBtLogin">Iniciar Sesión</string>
+    <string name="StrBtRegister">Registrarse.</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="StrLblRegisterTitle">Ingrese los siguientes datos para crear una cuenta de usuario.</string>
+
+</resources>
