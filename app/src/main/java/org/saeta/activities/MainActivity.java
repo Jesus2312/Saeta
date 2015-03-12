@@ -1,6 +1,5 @@
 package org.saeta.activities;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.saeta.webservice.WsConsume;
 
@@ -87,8 +87,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void AuthenticateUser(String user, String pass)
+    public String  AuthenticateUser(String user, String pass)
     {
+        String opResult= null;
         try
         {
             Debug.waitForDebugger();
@@ -96,8 +97,8 @@ public class MainActivity extends ActionBarActivity {
 
             ArrayList<NameValuePair> param = new ArrayList<NameValuePair>();
             param.add(new BasicNameValuePair("grant_type","password"));
-            param.add(new BasicNameValuePair("username","USRAUDITBETO"));
-            param.add(new BasicNameValuePair("password","7dJp4L"));
+            param.add(new BasicNameValuePair("username",user));
+            param.add(new BasicNameValuePair("password",pass));
 
             consumer.setParameters(param);
 
@@ -105,19 +106,24 @@ public class MainActivity extends ActionBarActivity {
 
             JSONObject jsonLogin=  new JSONObject(jsonResult);
 
-            String token = jsonLogin.toString(0);
+            String token = jsonLogin.getString("access_token");
+            String fullName = jsonLogin.getString("fullName");
+            String tokenType =jsonLogin.getString("token_type");
+            String userName = jsonLogin.getString("userName");
 
-            if(token!= null)
-            {
+            opResult="1";
 
-            }
-
+        }
+        catch (JSONException jsonError)
+        {
+            opResult= "El nombre de usuario o contraseña son invalidos";
         }
         catch (Exception e )
         {
-
+            opResult= "Error al validar credenciales (E001)";
         }
 
+      return  opResult;
      }
 
 
@@ -126,6 +132,7 @@ public class MainActivity extends ActionBarActivity {
 
        private  String _userName;
        private String _userPassword;
+       private String _opResult;
 
        @Override
        protected void onPreExecute() {
@@ -136,8 +143,21 @@ public class MainActivity extends ActionBarActivity {
 
        @Override
        protected String doInBackground(String... params) {
-         AuthenticateUser(this._userName, this._userPassword );
-           return null;
+          _opResult=AuthenticateUser(this._userName, this._userPassword );
+           return _opResult;
+       }
+       @Override
+       protected  void onPostExecute (final String result)
+       {
+           if (_opResult != "1")
+           {
+               Toast.makeText(MainActivity.this,_opResult,Toast.LENGTH_LONG);
+           }
+           else
+           {
+               // cambiar a nueva actividad
+
+           }
        }
    }
 
