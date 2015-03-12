@@ -1,5 +1,6 @@
 package org.saeta.webservice;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -12,6 +13,9 @@ import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,7 +29,7 @@ public class WsConsume {
     HttpClient httpClient;
     HttpContext localContext;
     HttpGet httpGet;
-
+    private ArrayList<NameValuePair> wsParameters  = new ArrayList<>();
 
     public WsConsume()
     {
@@ -87,6 +91,12 @@ public class WsConsume {
     }
 
 
+    public void setParameters(ArrayList<NameValuePair> _params)
+    {
+        this.wsParameters =_params;
+    }
+
+
     public void getReponse2()
     {
 
@@ -120,5 +130,50 @@ public class WsConsume {
 
         }
     }
+
+    public String getPostWsResponse()
+    {
+        String result= null;
+        try
+        {
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+            HttpPost post = new HttpPost(this._url);
+            post.setEntity(new UrlEncodedFormEntity(this.wsParameters));
+            response= client.execute(post);
+
+            InputStream stream = response.getEntity().getContent();
+
+            String json = convertInputStreamToString(stream);
+
+            result= json;
+
+        }
+        catch ( Exception f)
+        {
+            return null;
+
+        }
+        finally
+        {
+           // Manejar recursor Dispose en este bloque.
+        }
+        return  result;
+    }
+
+    private  String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
+
+
 
 }
