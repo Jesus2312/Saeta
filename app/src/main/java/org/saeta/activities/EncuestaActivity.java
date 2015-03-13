@@ -1,20 +1,36 @@
 package org.saeta.activities;
 
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-import org.saeta.activities.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.saeta.bussiness.UserSession;
+import org.saeta.entities.CEncuesta;
+import org.saeta.webservice.WsConsume;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class EncuestaActivity extends ActionBarActivity {
+
+    //Definicion de controles
+    Spinner lbEncuestas ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encuesta);
+
+        new asyncWsHelper(0).execute();
     }
 
 
@@ -40,33 +56,49 @@ public class EncuestaActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public  void GetEncuestas()
+    public CEncuesta[] GetEncuestas()
     {
+        CEncuesta[] encuestas;
+        String result;
+        HttpURLConnection connection =null;
         try
         {
-             String user= UserSession.USER_NAME;
-             String token = UserSession.TOKEN_KEY;
+                String uri="http://api.saeta.org.mx/Auditoria";
+                URL url = new URL(uri);
+                String token = UserSession.TOKEN_KEY;
+                connection = (HttpURLConnection)url.openConnection();
+                String strCred ="Bearer " +token;
+                connection.setRequestProperty("Authorization",strCred);
+                InputStream s = connection.getInputStream();
+                result = WsConsume.convertInputStreamToString(s);
+                Gson gson = new GsonBuilder().create();
+                encuestas = gson.fromJson(result,CEncuesta[].class);
 
-
-
-
-        }
+          }
         catch (Exception e )
         {
-
+          return  null;
         }
+        finally
+        {
+            if(connection!= null)
+            connection.disconnect();
+        }
+        return  encuestas;
     }
-
 
     class  asyncWsHelper extends AsyncTask<String,String,String>
     {
         int _actionToTake=-1;
+         CEncuesta[] encuestas;
 
 
         public asyncWsHelper(int action)
         {
-
+             _actionToTake= action;
         }
+
+
 
         @Override
         protected String doInBackground(String... params) {
@@ -76,10 +108,39 @@ public class EncuestaActivity extends ActionBarActivity {
 
             case 0:
             // obtener los datos de la encuesta
-
+             encuestas=GetEncuestas();
                 break;
         }
             return opResult;
+        }
+
+        @Override
+        protected  void  onPostExecute(final String result)
+        {
+
+            switch (_actionToTake)
+            {
+                case 0:
+                    MostrarListaEncuestas();
+                    break;
+            }
+
+        }
+
+
+        // Metodos de utileria privados
+         private void MostrarListaEncuestas ()
+        {
+            if (this.encuestas.length>0)
+            {
+                ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this,android.R.layout.simple_spinner_item,encuestas);
+                lbEncuestas.setAdapter(encuestaArrayAdapter);
+
+            }
+            else
+            {
+                Toast.makeText(EncuestaActivity.this,"No se encontraron encuestas pendientes.",Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

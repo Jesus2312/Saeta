@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 
@@ -161,7 +162,59 @@ public class WsConsume {
         return  result;
     }
 
-    private  String convertInputStreamToString(InputStream inputStream) throws IOException {
+
+    public String wsGetRequest(ArrayList<HttpParams> args)
+    {
+        String result ="";
+        try
+        {
+            DefaultHttpClient client= new DefaultHttpClient();
+            HttpGet  request= new HttpGet(this._url);
+
+            for (HttpParams s :args)
+            {
+                request.setParams(s);
+            }
+
+            HttpResponse response = client.execute(request);
+
+            HttpEntity entity = response.getEntity();
+
+        }
+        catch (Exception h)
+        {
+            return  null;
+        }
+        return  result;
+    }
+
+
+    public  String TestGet(String token)
+    {
+        String result ="";
+        try
+        {
+           String uri="http://api.saeta.org.mx/Auditoria";
+            URL url = new URL(uri);
+
+
+
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
+            String strCred ="Bearer " +token;
+            connection.setRequestProperty("Authorization",strCred);
+            InputStream s = connection.getInputStream();
+
+            result = convertInputStreamToString(s);
+        }
+        catch (Exception h)
+        {
+            return  null;
+        }
+        return  result;
+    }
+
+    public static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
