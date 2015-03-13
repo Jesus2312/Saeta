@@ -1,5 +1,7 @@
 package org.saeta.activities;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -15,6 +17,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.saeta.bussiness.UserSession;
 import org.saeta.webservice.WsConsume;
 
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ public class MainActivity extends ActionBarActivity {
     Button RegisterButton;
     EditText LblUserName;
     EditText LblPassword;
+    private ProgressDialog dialog;
     //
 
     public void Click (View v)
@@ -72,6 +76,11 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    public void clickRegister (View v)
+    {
+        startActivity(new Intent("org.saeta.EncuestaActivity"));
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -111,6 +120,13 @@ public class MainActivity extends ActionBarActivity {
             String tokenType =jsonLogin.getString("token_type");
             String userName = jsonLogin.getString("userName");
 
+
+            // set session variables
+               UserSession.TOKEN_KEY= token;
+               UserSession.TOKEN_TYPE= tokenType;
+               UserSession.USER_NAME= userName;
+            //
+
             opResult="1";
 
         }
@@ -138,7 +154,11 @@ public class MainActivity extends ActionBarActivity {
        protected void onPreExecute() {
            _userName = LblUserName.getText().toString();
            _userPassword = LblPassword.getText().toString();
-
+           dialog= new ProgressDialog(MainActivity.this);
+           dialog.setMessage("Validando  datos espere...");
+           dialog.setIndeterminate(false);
+           dialog.setCancelable(false);
+           dialog.show();
        }
 
        @Override
@@ -149,13 +169,15 @@ public class MainActivity extends ActionBarActivity {
        @Override
        protected  void onPostExecute (final String result)
        {
+           dialog.dismiss();
            if (_opResult != "1")
            {
-               Toast.makeText(MainActivity.this,_opResult,Toast.LENGTH_LONG);
+               Toast.makeText(MainActivity.this,_opResult,Toast.LENGTH_LONG).show();
            }
            else
            {
                // cambiar a nueva actividad
+               startActivity(new Intent("org.saeta.EncuestaActivity"));
 
            }
        }
