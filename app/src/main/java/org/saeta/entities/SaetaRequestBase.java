@@ -43,7 +43,6 @@ public class SaetaRequestBase  {
 
         WsConsume consumer;
 
-        
         return _response;
     }
 
