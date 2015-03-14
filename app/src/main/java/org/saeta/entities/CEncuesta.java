@@ -1,11 +1,14 @@
 package org.saeta.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by jlopez on 3/13/2015.
  */
-public class CEncuesta {
+public class CEncuesta  {
 
     private String IdEncuesta ;
     private String Encuesta;
@@ -29,17 +32,35 @@ public class CEncuesta {
 
     public  String getTelefono3()
     {
-        return Telefono3;
+        if (Telefono3!= null && Telefono2!="")
+        {
+            return  Telefono3;
+        }
+        else
+        {
+            return"N/A";
+        }
     }
 
     public  String getTelefono2()
     {
-        return Telefono2;
+        if (Telefono2!= null && Telefono2!=""){
+            return Telefono2;
+        }
+        else {
+            return  "N/A";
+        }
     }
 
     public  String getTelefono1 ()
     {
-        return Telefono1;
+       if (Telefono1!=null && Telefono1!=""){
+           return Telefono1;
+       }
+        else
+       {
+           return "N/A";
+       }
     }
     public String getNombre()
     {
@@ -79,6 +100,13 @@ public class CEncuesta {
     {
         return IdProceso;
     }
+
+    @Override
+    public String toString()
+    {
+        return Encuesta;
+    }
+
 
 
 }

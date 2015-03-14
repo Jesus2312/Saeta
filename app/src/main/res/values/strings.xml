@@ -9,5 +9,8 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="StrLblRegisterTitle">Ingrese los siguientes datos para crear una cuenta de usuario.</string>
     <string name="title_activity_encuesta">EncuestaActivity</string>
+    <string name="title_activity_encuesta_start">Encuesta (Preguntas y respuestas)</string>
+    <string name="StrBtSiguiente">Anterior</string>
+    <string name="StrBtAnterior">Siguiente</string>
 
 </resources>

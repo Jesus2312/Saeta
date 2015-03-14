@@ -1,5 +1,8 @@
 package org.saeta.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by jlopez on 3/13/2015.
  */
@@ -21,4 +24,7 @@ public class CRespuesta {
     public int getIdEncuesta(){return IdEncuesta;}
     public int getIdRespuesta(){return IdRespuesta;}
     public  CRespuesta(){}
+
+
+
 }

@@ -26,12 +26,20 @@
         <activity
             android:name=".EncuestaActivity"
             android:label="@string/title_activity_encuesta" >
-
             <intent-filter>
-                <action android:name="org.saeta.EncuestaActivity"/>
+                <action android:name="org.saeta.EncuestaActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".EncuestaStartActivity"
+            android:label="@string/title_activity_encuesta_start" >
+            <intent-filter>
+                <action android:name="org.saeta.IniciarEncuesta" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 
