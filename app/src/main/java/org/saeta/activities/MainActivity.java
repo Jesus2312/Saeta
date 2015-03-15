@@ -1,6 +1,7 @@
 package org.saeta.activities;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.UserSession;
+import org.saeta.entities.CEncuesta;
 import org.saeta.webservice.WsConsume;
 
 import java.util.ArrayList;
@@ -78,7 +81,10 @@ public class MainActivity extends ActionBarActivity {
 
     public void clickRegister (View v)
     {
-        startActivity(new Intent("org.saeta.EncuestaActivity"));
+        CEncuesta  e = new CEncuesta();
+
+        e.saveToDataBase(MainActivity.this);
+
     }
 
     @Override

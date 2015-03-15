@@ -208,7 +208,13 @@ public class EncuestaActivity extends ActionBarActivity {
             if (this.encuestas.length>0)
             {
                 try {
-                    ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this, android.R.layout.simple_spinner_item, encuestas);
+
+                    for(CEncuesta v : encuestas)
+                    {
+                        v.saveToDataBase(EncuestaActivity.this);
+                    }
+
+                     ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this, android.R.layout.simple_spinner_item, encuestas);
                     lbEncuestas.setAdapter(encuestaArrayAdapter);
                 }
                 catch (Exception f)
