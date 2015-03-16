@@ -41,6 +41,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AppMenuActivity"
+            android:label="@string/title_activity_app_menu" >
+
+            <intent-filter>
+                <action android:name="org.saeta.MenuApp" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

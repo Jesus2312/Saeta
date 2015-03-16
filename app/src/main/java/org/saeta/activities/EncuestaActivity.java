@@ -1,6 +1,8 @@
 package org.saeta.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -16,13 +18,20 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.apache.http.auth.NTUserPrincipal;
+import org.saeta.bussiness.DataBaseHandler;
+import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
+import org.saeta.entities.CPregunta;
+import org.saeta.entities.CRespuesta;
 import org.saeta.webservice.WsConsume;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class EncuestaActivity extends ActionBarActivity {
 
@@ -34,25 +43,21 @@ public class EncuestaActivity extends ActionBarActivity {
     EditText tbMunicipio;
     ////
 
-    asyncWsHelper h = new asyncWsHelper(0);
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encuesta);
         InitializeComponents();
-         h.execute();
+      //  h.execute();
+      //  ObtenerEncuestas();
 
         lbEncuestas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (h.getStatus() != AsyncTask.Status.RUNNING) {
                     CEncuesta cEncuesta = (CEncuesta) lbEncuestas.getSelectedItem();
                     ShowUserData(cEncuesta);
-                }
+
             }
 
             @Override
@@ -62,6 +67,90 @@ public class EncuestaActivity extends ActionBarActivity {
         });
     }
 
+
+    private ArrayList<CEncuesta> ObtenerEncuestas () throws Exception
+    {
+        ArrayList<CEncuesta> encuestas = new ArrayList<CEncuesta>();
+        try
+        {
+
+            ArrayList<CPregunta> preguntas = new ArrayList<CPregunta>();
+            ArrayList<CRespuesta> respuestas = new ArrayList<CRespuesta>();
+
+            DataBaseHandler handler = new DataBaseHandler(EncuestaActivity.this);
+
+            String q = "SELECT * FROM SAETA_ENCUESTAS E " +
+                    " WHERE IDENCUESTA  NOT IN (SELECT ENCUESTA_ID FROM " +
+                    " SAETA_USUARIO_RESPUESTA WHERE TERMINADO =1 );";
+            Cursor c = handler.GetCursor(q);
+
+            if (c!= null )
+            {
+                CEncuesta e = null;
+
+                while (c.moveToNext()) {
+                    e = new CEncuesta();
+                    e.IdEncuesta = c.getString(0);
+                    e.Encuesta = c.getString(1);
+                    e.IdProceso = c.getString(2);
+                    e.IdDetectado = c.getString(3);
+                    e.Municipio = c.getString(4);
+                    e.Paterno = c.getString(5);
+                    e.Materno = c.getString(6);
+                    e.Telefono1 = c.getString(7);
+                    e.Telefono2 = c.getString(8);
+                    e.Telefono3 = c.getString(9);
+
+
+                    if (e != null) {
+
+                        q = " SELECT * FROM SATEA_PREGUNTAS WHERE IDENCUESTA = " + e.IdEncuesta + ";";
+
+                        Cursor crPreguntas = handler.GetCursor(q);
+                        CPregunta pregunta = null;
+                        if (crPreguntas != null) {
+                            while (crPreguntas.moveToNext()) {
+                                pregunta = new CPregunta();
+                                pregunta.IdPregunta = crPreguntas.getInt(0);
+                                pregunta.IdEncuesta = crPreguntas.getInt(1);
+                                pregunta.Pregunta = crPreguntas.getString(2);
+                                pregunta.MultiRespuesta = crPreguntas.getString(3) == "1"  && crPreguntas.getString(3)!= null ? true : false;
+                                pregunta.Seleccionado = crPreguntas.getString(4);
+
+                                // Obtencion de las respuestas.
+                                CRespuesta respuesta = new CRespuesta();
+
+                                q = "SELECT * FROM SAETA_RESPUESTAS WHERE IDPREGUNTA = " + pregunta.IdPregunta + ";";
+
+                                Cursor cResp = handler.GetCursor(q);
+
+                                while (cResp.moveToNext()) {
+                                    respuesta = new CRespuesta();
+                                    respuesta.IdRespuesta = cResp.getInt(0);
+                                    respuesta.IdPregunta = cResp.getInt(1);
+                                    respuesta.Respuesta = cResp.getString(2);
+                                    respuesta.Seleccionado = cResp.getString(3);
+                                    respuesta.IndicadoraPAN = cResp.getInt(4) == 1 ? true : false;
+                                    respuesta.OcasionesSeleccionada = SaetaUtils.tryIntParse(cResp.getString(5));
+                                    respuesta.Domicilios = cResp.getString(6);
+                                    respuestas.add(respuesta);
+                                    pregunta.Respuestas.add(respuesta); // agregar respuesta
+                                }
+                               e.Preguntas.add(pregunta);// add pregunta
+                            }
+                        }
+
+                     }// if c!= null
+                    encuestas.add(e);
+                }// while encuestas
+            }
+        }
+        catch (Exception sqlExcep)
+        {
+            throw sqlExcep;
+        }
+        return encuestas;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,42 +201,24 @@ public class EncuestaActivity extends ActionBarActivity {
             lbTelefonos = (Spinner) findViewById(R.id.LbTelefonos);
             lbEncuestas = (Spinner) findViewById(R.id.LbEncuestas);
 
+            ArrayList<CEncuesta> _encuestas= null;
+
+            try
+            {
+                _encuestas= ObtenerEncuestas();
+            }
+            catch (Exception f)
+            {
+                Toast.makeText(EncuestaActivity.this, "Error al obtener encuestas (E009)",Toast.LENGTH_LONG).show();
+            }
+
+            MostrarListaEncuestas(_encuestas);
+
          }
         catch (Exception d)
         {
             Toast.makeText(EncuestaActivity.this,"Error al crear componentes (E004",Toast.LENGTH_LONG).show();
         }
-    }
-
-    public CEncuesta[] GetEncuestas()
-    {
-        CEncuesta[] encuestas;
-        String result;
-        HttpURLConnection connection =null;
-        try
-        {
-                String uri="http://api.saeta.org.mx/Auditoria";
-                URL url = new URL(uri);
-                String token = UserSession.TOKEN_KEY;
-                connection = (HttpURLConnection)url.openConnection();
-                String strCred ="Bearer " +token;
-                connection.setRequestProperty("Authorization",strCred);
-                InputStream s = connection.getInputStream();
-                result = WsConsume.convertInputStreamToString(s);
-                Gson gson = new GsonBuilder().create();
-                encuestas = gson.fromJson(result,CEncuesta[].class);
-
-          }
-        catch (Exception e )
-        {
-          return  null;
-        }
-        finally
-        {
-            if(connection!= null)
-            connection.disconnect();
-        }
-        return  encuestas;
     }
 
 
@@ -160,73 +231,13 @@ public class EncuestaActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-
-    class  asyncWsHelper extends AsyncTask<String,String,String>
+    private void MostrarListaEncuestas (ArrayList<CEncuesta> _encuestas)
     {
-        int _actionToTake=-1;
-         CEncuesta[] encuestas;
+
+                ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this, android.R.layout.simple_spinner_item, _encuestas);
+                lbEncuestas.setAdapter(encuestaArrayAdapter);
+
+      }
 
 
-        public asyncWsHelper(int action)
-        {
-             _actionToTake= action;
-        }
-
-
-//f
-        @Override
-        protected String doInBackground(String... params) {
-            String opResult= null;
-        switch (_actionToTake)
-        {
-
-            case 0:
-            // obtener los datos de la encuesta
-             encuestas=GetEncuestas();
-                break;
-        }
-            return opResult;
-        }
-
-        @Override
-        protected  void  onPostExecute(final String result)
-        {
-
-            switch (_actionToTake)
-            {
-                case 0:
-                    MostrarListaEncuestas();
-                    break;
-            }
-
-        }
-
-
-        // Metodos de utileria privados
-         private void MostrarListaEncuestas ()
-        {
-            if (this.encuestas.length>0)
-            {
-                try {
-
-                    for(CEncuesta v : encuestas)
-                    {
-                        v.saveToDataBase(EncuestaActivity.this);
-                    }
-
-                     ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this, android.R.layout.simple_spinner_item, encuestas);
-                    lbEncuestas.setAdapter(encuestaArrayAdapter);
-                }
-                catch (Exception f)
-                {
-                    f.printStackTrace();
-                }
-
-            }
-            else
-            {
-                Toast.makeText(EncuestaActivity.this,"No se encontraron encuestas pendientes.",Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 }

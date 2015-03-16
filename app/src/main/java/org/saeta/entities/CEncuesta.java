@@ -2,6 +2,7 @@ package org.saeta.entities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,18 +18,19 @@ public class CEncuesta  {
 
     public final  static  String  TABLE_NAME ="SAETA_ENCUESTAS";
 
-    private String IdEncuesta  ="";
-    private String Encuesta ="";
-    private String IdProceso="";
-    private String IdDetectado ="";
-    private String Municipio="";
-    private String Paterno ="";
-    private String Materno ="" ;
-    private String Nombre ="";
-    private String Telefono1 ="";
-    private String Telefono2 ="";
-    private String Telefono3 ="";
-    private ArrayList<CPregunta> Preguntas = new ArrayList<CPregunta>();
+    public String IdEncuesta  ="";
+    public String Encuesta ="";
+    public String IdDetectado ="";
+    public  String IdProceso="";
+    public String Municipio="";
+    public String Paterno ="";
+    public String Materno ="" ;
+    public String Nombre ="";
+    public String Telefono1 ="";
+    public String Telefono2 ="";
+    public String Telefono3 ="";
+    public ArrayList<CPregunta> Preguntas = new ArrayList<CPregunta>();
+
 
     public ArrayList<CPregunta> getPreguntas(){return Preguntas;}
 
@@ -130,48 +132,63 @@ public class CEncuesta  {
         String r= "";
         try
         {
-            //GUARDAR LA ENCUESTA
-           StringBuilder qry= new StringBuilder();
-
-            qry.append(" INSERT INTO SAETA_ENCUESTAS VALUES ( ")
-                    .append(this.IdEncuesta).append(" ,'").append(this.Encuesta).append("', ") .append( IdProceso)
-                    .append(" , ").append(IdDetectado).append(" , '").append(Paterno).append("' , '").append(Materno).append("','").append(Nombre)
-                    .append("','").append(Telefono1).append("','").append(Telefono2).append("','").append(Telefono3).append("')");
-
-            String f = qry.toString();
-
+            int RegExist=-1;
             DataBaseHandler handler = new DataBaseHandler(context);
-            handler.ExecuteQuery(f);
+            String query ="SELECT COUNT (*) FROM SAETA_ENCUESTAS WHERE IDENCUESTA ="+ this.IdEncuesta+";";
+            Cursor cr = handler.GetCursor(query);
 
-            // GUARDAR LAS PREGUNTAS
-
-            for (CPregunta c : this.Preguntas)
+            if (cr!= null)
             {
-                int mRespuesta = c.isMultiRespuesta()==true?1:0;
-                ContentValues cv = new ContentValues();
-                cv.put("IdPregunta" ,c.getIdPregunta());
-                cv.put("IdEncuesta",c.getIdEncuesta());
-                cv.put("Pregunta",c.getPregunta());
-                cv.put("Multirespuesta", mRespuesta);
-                cv.put("Seleccionado",c.getSeleccionado());
-                handler.SaveToDataBase(cv,"SATEA_PREGUNTAS");
-
-                for(CRespuesta v : c.getRespuestas())
+                if (cr.moveToFirst())
                 {
-                    int idp = v.isIndicadoraPAN()== true? 1:0;
-                    ContentValues contentValues= new ContentValues();
-                    contentValues.put("IdRespuesta",v.getIdRespuesta());
-                    contentValues.put("IdPregunta", v.getIdEncuesta());
-                    contentValues.put("Respuesta", v.getRespuesta());
-                    contentValues.put("Seleccionado",v.getSeleccionado());
-                    contentValues.put("IndicadoraPAN",idp);
-                    contentValues.put("OcasionesSeleccionada",v.getOcasionesSeleccionada());
-                    contentValues.put("Domicilios", v.getDomicilios());
-                    handler.SaveToDataBase(contentValues,"SAETA_RESPUESTAS");
+                    RegExist= cr.getInt(0);
                 }
-
             }
 
+
+            if (RegExist<= 0) {
+
+                //GUARDAR LA ENCUESTA
+                StringBuilder qry = new StringBuilder();
+
+                qry.append(" INSERT INTO SAETA_ENCUESTAS VALUES ( ")
+                        .append(this.IdEncuesta).append(" ,'").append(this.Encuesta).append("', ").append(IdProceso)
+                        .append(" , ").append(IdDetectado).append(" , '").append(Paterno).append("' , '").append(Materno).append("','").append(Nombre)
+                        .append("','").append(Telefono1).append("','").append(Telefono2).append("','").append(Telefono3).append("')");
+
+                String f = qry.toString();
+
+
+                handler.ExecuteQuery(f);
+
+                // GUARDAR LAS PREGUNTAS
+
+                for (CPregunta c : this.Preguntas) {
+                    int mRespuesta = c.isMultiRespuesta() == true ? 1 : 0;
+                    ContentValues cv = new ContentValues();
+                    cv.put("IdPregunta", c.getIdPregunta());
+                    cv.put("IdEncuesta", c.getIdEncuesta());
+                    cv.put("Pregunta", c.getPregunta());
+                    cv.put("Multirespuesta", mRespuesta);
+                    cv.put("Seleccionado", c.getSeleccionado());
+                    handler.SaveToDataBase(cv, "SATEA_PREGUNTAS");
+
+                    for (CRespuesta v : c.getRespuestas()) {
+                        int idp = v.isIndicadoraPAN() == true ? 1 : 0;
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("IdRespuesta", v.getIdRespuesta());
+                        contentValues.put("IdPregunta", v.IdPregunta);
+                        contentValues.put("Respuesta", v.getRespuesta());
+                        contentValues.put("Seleccionado", v.getSeleccionado());
+                        contentValues.put("IndicadoraPAN", idp);
+                        contentValues.put("OcasionesSeleccionada", v.getOcasionesSeleccionada());
+                        contentValues.put("Domicilios", v.getDomicilios());
+                        handler.SaveToDataBase(contentValues, "SAETA_RESPUESTAS");
+                    }
+
+                }
+            }
+          r= "1";
 
         }
         catch (Exception f)

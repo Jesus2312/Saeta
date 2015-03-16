@@ -6,12 +6,12 @@ import java.util.ArrayList;
  * Created by jlopez on 3/13/2015.
  */
 public class CPregunta {
-    private  int IdPregunta;
-    private  int IdEncuesta;
-    private  String Pregunta ;
-    private  boolean MultiRespuesta;
-    private  String Seleccionado ;
-    private ArrayList<CRespuesta> Respuestas = new ArrayList<CRespuesta>();
+    public   int IdPregunta;
+    public  int IdEncuesta;
+    public  String Pregunta ;
+    public  boolean MultiRespuesta;
+    public  String Seleccionado ;
+    public ArrayList<CRespuesta> Respuestas = new ArrayList<CRespuesta>();
 
     public  CPregunta(){}
 

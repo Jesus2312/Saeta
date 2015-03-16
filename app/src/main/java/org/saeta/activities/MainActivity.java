@@ -183,7 +183,7 @@ public class MainActivity extends ActionBarActivity {
            else
            {
                // cambiar a nueva actividad
-               startActivity(new Intent("org.saeta.EncuestaActivity"));
+               startActivity(new Intent("org.saeta.MenuApp"));
 
            }
        }

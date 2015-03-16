@@ -8,13 +8,14 @@ import android.os.Parcelable;
  */
 public class CRespuesta {
 
-    private int IdRespuesta;
-    private int IdEncuesta;
-    private String Respuesta ;
-    private String Seleccionado;
-    private boolean IndicadoraPAN ;
-    private int OcasionesSeleccionada;
-    private  String Domicilios ;
+    public int IdRespuesta;
+    public int IdEncuesta;
+    public String Respuesta ;
+    public String Seleccionado;
+    public boolean IndicadoraPAN ;
+    public int OcasionesSeleccionada;
+    public  String Domicilios ;
+    public int IdPregunta;
 
     public String getDomicilios(){return  Domicilios;}
     public int getOcasionesSeleccionada(){return OcasionesSeleccionada;}

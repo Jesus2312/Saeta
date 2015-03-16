@@ -2,6 +2,7 @@ package org.saeta.bussiness;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
@@ -121,5 +122,20 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         }
         return  res;
+    }
+
+    public Cursor GetCursor(String query )
+    {
+        Cursor res = null;
+        try
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+            res= db.rawQuery(query,null);
+        }
+        catch (Exception f)
+        {
+            res= null;
+        }
+        return res;
     }
 }
