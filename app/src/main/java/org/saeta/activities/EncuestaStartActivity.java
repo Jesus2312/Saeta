@@ -112,6 +112,8 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         }
 
     }
+    //comit
+
 
     public void btSiguienteClick (View v)
     {
