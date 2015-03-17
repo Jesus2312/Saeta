@@ -20,6 +20,7 @@ import org.saeta.entities.CPregunta;
 import org.saeta.entities.CRespuesta;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class EncuestaStartActivity extends ActionBarActivity  {
 
@@ -27,7 +28,8 @@ public class EncuestaStartActivity extends ActionBarActivity  {
     private  RadioGroup rbGroup;
     private int indexMarker =0;
     private TextView lblTituloPregunta;
-    Button btNext;
+     private ListIterator<CPregunta> iterator = null;
+     Button btNext;
     Button btBack;
 
 
@@ -39,7 +41,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         rbGroup = (RadioGroup) findViewById(R.id.RbGroup);
         lblTituloPregunta = (TextView) findViewById(R.id.LblTituloPregunta);
         btNext= (Button) findViewById(R.id.BtSiguiente);
-        btBack = (Button) findViewById(R.id.BtAnterior);
+    //    btBack = (Button) findViewById(R.id.BtAnterior);
         MostrarEncusta();
     }
 
@@ -93,11 +95,11 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             encuesta= UserSession.T_ENCUESTA;
             if (encuesta!= null)
             {
-                CPregunta p = encuesta.getPreguntas().get(0);
+                iterator= encuesta.getPreguntas().listIterator();
+                CPregunta p = iterator.next();
                 lblTituloPregunta.setText(p.getPregunta());
                 DrawRespuestas(p);
-                indexMarker +=1;
-            }
+             }
             else
             {
                 Toast.makeText(this,"No hay encuesta", Toast.LENGTH_SHORT).show();
@@ -113,38 +115,59 @@ public class EncuestaStartActivity extends ActionBarActivity  {
 
     public void btSiguienteClick (View v)
     {
-        //TODO Guardar respuesta actual
-
-        int total = encuesta.getPreguntas().size();
-
-        if (indexMarker == total)
+        if(encuesta!= null)
         {
-          btNext.setText("Finalizar");
-        }
-        else
-        {
-            // obtener la pregunta por medio del indice
-            CPregunta pregunta = encuesta.getPreguntas().get(indexMarker);
-            lblTituloPregunta.setText(pregunta.getPregunta());
-            // dibjuarlas respuestas a tal pregunta .
-            DrawRespuestas(pregunta);
-            // incrementar el indice .
-            indexMarker += 1;
+
+                int resp = rbGroup.getCheckedRadioButtonId();
+                if (resp < 0)
+                {
+                    Toast.makeText(this, "Favor de seleccionar una respusta para continuar", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            int curr = iterator.nextIndex()-1; // posicion actual del iterador
+            encuesta.getPreguntas().get(curr).Seleccionado = Integer.toString(resp); // guardar la respuesta
+            // Si hay mas preguntas avansar el apuntador .
+            if(iterator.hasNext()){
+                CPregunta pregunta = iterator.next();
+                lblTituloPregunta.setText(pregunta.getPregunta());
+                DrawRespuestas(pregunta);
+            }
+            else
+            {
+                btNext.setText("Finalizar Encuesta");
+                String r =  encuesta.GuardarRespuestas(this);
+                if(r!="1")
+                {
+                    Toast.makeText(this,"Error: " +r,Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(this, "Encuesta guardada correctamente.", Toast.LENGTH_LONG).show();
+                }
+
+            }
         }
     }
 
-    public void btAnteriorClick (View v)
+  /*  public void btAnteriorClick (View v)
     {
-        if(indexMarker >0 ) {
-            // obtener la pregunta por medio del indice
-            CPregunta pregunta = encuesta.getPreguntas().get(indexMarker);
-            lblTituloPregunta.setText(pregunta.getPregunta());
-            // dibjuarlas respuestas a tal pregunta .
-            DrawRespuestas(pregunta);
-            // incrementar el indice .
-            indexMarker-=1;
+        if (encuesta!= null)
+        {
+
+            if (iterator.hasPrevious()){
+
+                if(btNext.getText() =="Finalizar Encuesta")
+                {
+                    btNext.setText("Siguiente");
+                }
+
+                iterator.previous();
+                 CPregunta c = iterator.previous();
+                 lblTituloPregunta.setText(c.getPregunta());
+                 DrawRespuestas(c);
         }
-            }
+        }
+    }*/
 
 
     private void DrawRespuestas (CPregunta p)

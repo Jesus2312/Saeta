@@ -7,9 +7,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.saeta.bussiness.DataBaseHandler;
+import org.saeta.bussiness.UserSession;
 
 import java.nio.channels.ScatteringByteChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by jlopez on 3/13/2015.
@@ -127,6 +131,36 @@ public class CEncuesta  {
 
     }
 
+    public  String GuardarRespuestas ( Context c )
+    {
+        String res ="";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String strDate= dateFormat.format(date);
+        try
+        {
+            DataBaseHandler handler = new DataBaseHandler(c);
+            for(CPregunta p :  Preguntas)
+            {
+                ContentValues cv = new ContentValues();
+                cv.put("TOKEN_NUMBER", UserSession.TOKEN_KEY);
+                cv.put("ENCUESTA_ID",this.IdEncuesta);
+                cv.put("PREGUNTA_ID", p.getIdPregunta());
+                cv.put("RESPUESTA_ID",p.getSeleccionado());
+                cv.put("FECHA_RESPUESTA",strDate);
+                cv.put("TERMINADO",1);
+                handler.SaveToDataBase(cv,"SAETA_USUARIO_RESPUESTA");
+            }
+            res="1";
+        }
+        catch (Exception f)
+        {
+             res ="Error al guardar resultados encuesta (E011)";
+        }
+        return res;
+    }
+
+
     public  String saveToDataBase(Context context)
     {
         String r= "";
@@ -151,9 +185,9 @@ public class CEncuesta  {
                 //GUARDAR LA ENCUESTA
                 StringBuilder qry = new StringBuilder();
 
-                qry.append(" INSERT INTO SAETA_ENCUESTAS VALUES ( ")
+                qry.append(" INSERT INTO SAETA_ENCUESTAS ( IDENCUESTA,ENCUESTA,IDPROCESO,IDDETECTADO,MUNICIPIO,PATERNO,MATERNO,NOMBRE,TELEFONO1,TELEFONO2,TELEFONO3) VALUES ( ")
                         .append(this.IdEncuesta).append(" ,'").append(this.Encuesta).append("', ").append(IdProceso)
-                        .append(" , ").append(IdDetectado).append(" , '").append(Paterno).append("' , '").append(Materno).append("','").append(Nombre)
+                        .append(" , ").append(IdDetectado).append(" , '").append(Municipio).append("' , '").append(Paterno).append("' , '").append(Materno).append("','").append(Nombre)
                         .append("','").append(Telefono1).append("','").append(Telefono2).append("','").append(Telefono3).append("')");
 
                 String f = qry.toString();

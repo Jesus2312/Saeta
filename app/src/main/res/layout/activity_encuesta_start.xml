@@ -36,6 +36,18 @@
                     android:id="@+id/RbGroup"></RadioGroup>
             </LinearLayout>
 
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Audio"
+                android:id="@+id/button5" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Video"
+                android:id="@+id/button4" />
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
@@ -45,7 +57,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/StrBtSiguiente"
                     android:id="@+id/BtAnterior"
-                    android:onClick="btAnteriorClick" />
+                    android:onClick="btAnteriorClick"
+                    android:visibility="invisible" />
 
                 <Button
                     android:layout_width="wrap_content"
