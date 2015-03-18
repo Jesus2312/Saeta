@@ -6,9 +6,14 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.apache.http.util.ByteArrayBuffer;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.UserSession;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.channels.ScatteringByteChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -151,6 +156,15 @@ public class CEncuesta  {
                 cv.put("TERMINADO",1);
                 handler.SaveToDataBase(cv,"SAETA_USUARIO_RESPUESTA");
             }
+
+            // actualizar registro terminado
+            String updQuery =" UPDATE SAETA_ENCUESTAS SET TERMINADO =1 WHERE IDENCUESTA ='"+this.IdEncuesta+"';";
+            handler.ExecuteQuery(updQuery);
+
+            // guardar los archivos enbebidos en storage local
+
+            SaveMedia(c);
+
             res="1";
         }
         catch (Exception f)
@@ -160,6 +174,70 @@ public class CEncuesta  {
         return res;
     }
 
+    private void SaveMedia (Context c) throws Exception
+    {
+        try
+        {
+            byte[] audio = null;
+            byte[] video = null;
+            // guardar audio
+
+            for(CPregunta p : Preguntas) {
+
+                if (p.VideoUrl != "" || p.AudioUrl != "") {
+                    // coneitene audio file
+                    if (p.AudioUrl != "") {
+                        File file = new File(p.AudioUrl);
+                        InputStream fis = new FileInputStream(file);
+                        BufferedInputStream bis = new BufferedInputStream(fis, 128);
+                        ByteArrayBuffer baf = new ByteArrayBuffer(128);
+                        int current = 0;
+                        while ((current = bis.read()) != -1) {
+                            baf.append((byte) current);
+                        }
+                        audio = baf.toByteArray();
+
+                        if (audio != null) {
+
+
+                        }
+
+                    }
+
+                    if (p.VideoUrl != "") {
+                        File file = new File(p.VideoUrl);
+                        InputStream fis = new FileInputStream(file);
+                        BufferedInputStream bis = new BufferedInputStream(fis, 128);
+                        ByteArrayBuffer baf = new ByteArrayBuffer(128);
+                        int current = 0;
+                        while ((current = bis.read()) != -1) {
+                            baf.append((byte) current);
+                        }
+                        video = baf.toByteArray();
+                    }
+
+                    ContentValues cv = new ContentValues();
+                    cv.put("IDENCUESTA", p.getIdEncuesta());
+                    cv.put("IDPREGUNTA", p.getIdPregunta());
+
+                    if (audio != null) {
+                        cv.put("AUDIO_DATA", audio);
+                    }
+                    if (video != null) {
+                        cv.put("VIDEO_DATA", video);
+                    }
+
+                    DataBaseHandler h = new DataBaseHandler(c);
+                    h.SaveToDataBase(cv, "ENCUESTA_MEDIA");
+                }
+            }
+        }
+        catch (Exception f )
+        {
+            throw f;
+
+        }
+    }
 
     public  String saveToDataBase(Context context)
     {

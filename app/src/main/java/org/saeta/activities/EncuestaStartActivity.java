@@ -223,10 +223,11 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             mRecorder.release();
             mRecorder= null;
             isRecording = false;
+
         }
         catch (Exception d)
         {
-
+            Toast.makeText(this,"Error al detener grabacion de audio E(0012)",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -245,8 +246,10 @@ public class EncuestaStartActivity extends ActionBarActivity  {
     {
         if(requestCode ==REQUEST_VIDEO_CAPTURE && resultCode ==RESULT_OK)
         {
-           videoView= new VideoView(this);
+           int idx = iterator.nextIndex()-1;
+          videoView= new VideoView(this);
            Uri videoUri = data.getData();
+            encuesta.getPreguntas().get(idx).VideoUrl= videoUri.getPath();
            videoView.setVideoURI(videoUri);
            videoView.start();
 
@@ -265,6 +268,9 @@ public class EncuestaStartActivity extends ActionBarActivity  {
                 //FileDescriptor ds = fs.getFD();
                 mRecorder.setOutputFile(fname);
                 mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+                // guardar la ruta del archivo
+                encuesta.getPreguntas().get(currIndex).AudioUrl =fname;
 
                 try {
                     mRecorder.prepare();

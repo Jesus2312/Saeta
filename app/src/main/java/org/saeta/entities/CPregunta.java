@@ -12,16 +12,12 @@ public class CPregunta {
     public  boolean MultiRespuesta;
     public  String Seleccionado ;
     public ArrayList<CRespuesta> Respuestas = new ArrayList<CRespuesta>();
-
     public  CPregunta(){}
-
     public ArrayList<CRespuesta> getRespuestas(){return Respuestas;}
-
     public String getSeleccionado()
     {
         return Seleccionado;
     }
-
     public boolean isMultiRespuesta()
     {
         return MultiRespuesta;
@@ -30,7 +26,6 @@ public class CPregunta {
     {
         return  Pregunta;
     }
-
     public  int getIdEncuesta()
     {
         return IdEncuesta;
@@ -39,6 +34,8 @@ public class CPregunta {
     {
         return IdPregunta;
     }
+    public String VideoUrl ="";
+    public String AudioUrl ="";
 
 
 
