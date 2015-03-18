@@ -28,7 +28,8 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:id="@+id/ly2">
 
                 <RadioGroup
                     android:layout_width="fill_parent"
@@ -39,14 +40,9 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Audio"
-                android:id="@+id/button5" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:text="Video"
-                android:id="@+id/button4" />
+                android:id="@+id/button4"
+                android:onClick="PlayTest" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"

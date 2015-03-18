@@ -1,13 +1,19 @@
 package org.saeta.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -19,6 +25,9 @@ import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPregunta;
 import org.saeta.entities.CRespuesta;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
@@ -28,10 +37,13 @@ public class EncuestaStartActivity extends ActionBarActivity  {
     private  RadioGroup rbGroup;
     private int indexMarker =0;
     private TextView lblTituloPregunta;
-     private ListIterator<CPregunta> iterator = null;
-     Button btNext;
+    private ListIterator<CPregunta> iterator = null;
+    private MediaRecorder mRecorder = null;
+    private boolean isRecording= false;
+    Button btNext;
     Button btBack;
-
+    LinearLayout ly ;
+    RecordAudioButton rcbutton;
 
 
     @Override
@@ -41,6 +53,10 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         rbGroup = (RadioGroup) findViewById(R.id.RbGroup);
         lblTituloPregunta = (TextView) findViewById(R.id.LblTituloPregunta);
         btNext= (Button) findViewById(R.id.BtSiguiente);
+        ly = (LinearLayout) findViewById(R.id.ly2);
+        rcbutton = new RecordAudioButton(this);
+        ly.addView(rcbutton);
+
     //    btBack = (Button) findViewById(R.id.BtAnterior);
         MostrarEncusta();
     }
@@ -151,26 +167,6 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         }
     }
 
-  /*  public void btAnteriorClick (View v)
-    {
-        if (encuesta!= null)
-        {
-
-            if (iterator.hasPrevious()){
-
-                if(btNext.getText() =="Finalizar Encuesta")
-                {
-                    btNext.setText("Siguiente");
-                }
-
-                iterator.previous();
-                 CPregunta c = iterator.previous();
-                 lblTituloPregunta.setText(c.getPregunta());
-                 DrawRespuestas(c);
-        }
-        }
-    }*/
-
 
     private void DrawRespuestas (CPregunta p)
     {
@@ -185,6 +181,105 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             rbt.setId(f.getIdRespuesta());
             rbGroup.addView(rbt);
         }
+    }
+
+    public  void PlayTest(View v)
+    {
+        MediaPlayer mp = new MediaPlayer();
+        try
+        {
+            int currIndex = iterator.nextIndex() - 1;
+            String fname =  getFilesDir() +"/AU" + encuesta.IdEncuesta.toString() + "-" + encuesta.getPreguntas().get(currIndex).getIdPregunta() + ".3gp";
+            mp.setDataSource(fname);
+            mp.prepare();
+            mp.start();
+        }
+        catch (Exception d)
+        {
+            Toast.makeText(this,"eee",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void onRecord(boolean start)
+    {
+        if(start)
+        {
+            StartRecording();
+        }
+        else {
+            StopRecordng();
+        }
+    }
+    public  void StopRecordng ()
+    {
+        try
+        {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder= null;
+            isRecording = false;
+        }
+        catch (Exception d)
+        {
+
+        }
+    }
+
+    public void StartRecording () {
+        try {
+
+            if (!isRecording) {
+                int currIndex = iterator.nextIndex() - 1;
+                String fname =  getFilesDir() +"/AU" + encuesta.IdEncuesta.toString() + "-" + encuesta.getPreguntas().get(currIndex).getIdPregunta() + ".3gp";
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                //FileOutputStream fs = openFileOutput(fname,Context.MODE_PRIVATE);
+                //FileDescriptor ds = fs.getFD();
+                mRecorder.setOutputFile(fname);
+                mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+                try {
+                    mRecorder.prepare();
+                } catch (IOException i) {
+                    Toast.makeText(this, "Error en preparacion de dispositivo ", Toast.LENGTH_LONG).show();
+                }
+
+
+                mRecorder.start();
+                isRecording = true;
+            }
+
+        } catch (Exception d) {
+            Toast.makeText(this, "Error al grabar audio " + d.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+    class  RecordAudioButton extends   Button{
+        boolean mStartRecording = true;
+
+        public RecordAudioButton(Context context) {
+            super(context);
+            setText("Grabar Audio");
+            setOnClickListener(clicker);
+        }
+        OnClickListener clicker = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRecord(mStartRecording);
+
+                        if(mStartRecording)
+                        {
+                            setText("Detener Grabacion");
+                        }
+                         else {
+                            setText("Grabar audio");
+
+                     }
+                mStartRecording = !mStartRecording;
+              }
+        };
+
+
     }
 
 }
