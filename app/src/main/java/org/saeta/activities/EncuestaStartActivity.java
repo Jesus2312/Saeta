@@ -3,9 +3,12 @@ package org.saeta.activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import org.saeta.activities.R;
 import org.saeta.bussiness.UserSession;
@@ -33,17 +37,18 @@ import java.util.ListIterator;
 
 public class EncuestaStartActivity extends ActionBarActivity  {
 
+    static  final int REQUEST_VIDEO_CAPTURE =1;
     private CEncuesta encuesta;
     private  RadioGroup rbGroup;
-    private int indexMarker =0;
     private TextView lblTituloPregunta;
     private ListIterator<CPregunta> iterator = null;
     private MediaRecorder mRecorder = null;
     private boolean isRecording= false;
     Button btNext;
-    Button btBack;
     LinearLayout ly ;
     RecordAudioButton rcbutton;
+    Intent takeVideoIntent;
+    VideoView videoView = null;
 
 
     @Override
@@ -225,6 +230,28 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         }
     }
 
+
+    public void capturarVideo (View v)
+    {
+        takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if(takeVideoIntent.resolveActivity(getPackageManager())!=null)
+        {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(requestCode ==REQUEST_VIDEO_CAPTURE && resultCode ==RESULT_OK)
+        {
+           videoView= new VideoView(this);
+           Uri videoUri = data.getData();
+           videoView.setVideoURI(videoUri);
+           videoView.start();
+
+        }
+    }
     public void StartRecording () {
         try {
 

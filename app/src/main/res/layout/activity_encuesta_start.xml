@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:text="Video"
                 android:id="@+id/button4"
-                android:onClick="PlayTest" />
+                android:onClick="capturarVideo" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"
