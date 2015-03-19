@@ -3,8 +3,6 @@ package org.saeta.entities;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import org.apache.http.util.ByteArrayBuffer;
 import org.saeta.bussiness.DataBaseHandler;
@@ -14,7 +12,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.nio.channels.ScatteringByteChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -205,9 +202,10 @@ public class CEncuesta  {
                     }
 
                     if (p.VideoUrl != "") {
-                        File file = new File(p.VideoUrl);
-                        InputStream fis = new FileInputStream(file);
-                        BufferedInputStream bis = new BufferedInputStream(fis, 128);
+                        //File file = new File(p.VideoUrl);
+                        FileInputStream fin= new FileInputStream(p.VideoUrl);
+                       // InputStream fis = new FileInputStream(file);
+                        BufferedInputStream bis = new BufferedInputStream(fin);
                         ByteArrayBuffer baf = new ByteArrayBuffer(128);
                         int current = 0;
                         while ((current = bis.read()) != -1) {

@@ -4,17 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.Environment;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -23,14 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import org.saeta.activities.R;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPregunta;
 import org.saeta.entities.CRespuesta;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -247,9 +243,23 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         if(requestCode ==REQUEST_VIDEO_CAPTURE && resultCode ==RESULT_OK)
         {
            int idx = iterator.nextIndex()-1;
-          videoView= new VideoView(this);
+           videoView= new VideoView(this);
            Uri videoUri = data.getData();
-            encuesta.getPreguntas().get(idx).VideoUrl= videoUri.getPath();
+          String absolutePath ="";
+            try
+            {
+              String [] proj = {MediaStore.Video.Media.DATA};
+              Cursor cursor =  this.getContentResolver().query(videoUri,proj,null,null,null);
+              int  colIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+              cursor.moveToFirst();
+              absolutePath = cursor.getString(colIndex);
+
+            }
+            catch (Exception d)
+            {
+             absolutePath ="";
+            }
+           encuesta.getPreguntas().get(idx).VideoUrl= absolutePath;
            videoView.setVideoURI(videoUri);
            videoView.start();
 
