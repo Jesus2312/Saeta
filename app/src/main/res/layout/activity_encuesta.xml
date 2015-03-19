@@ -34,14 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Encuesta:"
-                android:id="@+id/textView6" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/TbEncuesta"
-                android:enabled="false" />
+                android:text="Encuestas  pendientes"
+                android:id="@+id/LbEncuestasPendientes" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -111,7 +105,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Iniciar Encuesta"
-                android:id="@+id/button"
+                android:id="@+id/BtIniciarEncuesta"
                 android:layout_gravity="center_horizontal"
                 android:onClick="ClickIniciarEncuesta" />
 

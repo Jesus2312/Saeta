@@ -1,9 +1,7 @@
 package org.saeta.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -11,26 +9,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.apache.http.auth.NTUserPrincipal;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPregunta;
 import org.saeta.entities.CRespuesta;
-import org.saeta.webservice.WsConsume;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class EncuestaActivity extends ActionBarActivity {
@@ -41,6 +32,8 @@ public class EncuestaActivity extends ActionBarActivity {
     EditText tbApellidoMaterno;
     Spinner lbTelefonos;
     EditText tbMunicipio;
+    TextView lbEncuestasPendientes;
+    Button btIniciarEncuesta ;
     ////
 
     @Override
@@ -144,6 +137,17 @@ public class EncuestaActivity extends ActionBarActivity {
                     encuestas.add(e);
                 }// while encuestas
             }
+            // Imprimir el numero de encuestas disponibles .
+            lbEncuestasPendientes.setText("Encuestas pendientes: "+ encuestas.size());
+            if (encuestas.size()<= 0 )
+            {
+                btIniciarEncuesta.setEnabled(false);
+                Toast.makeText(this, "No hay encuestas pendientes, intente descargando catalogo de encuestas", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                btIniciarEncuesta.setEnabled(true);
+            }
         }
         catch (Exception sqlExcep)
         {
@@ -200,6 +204,8 @@ public class EncuestaActivity extends ActionBarActivity {
             tbMunicipio = (EditText) findViewById(R.id.TbMunicipio);
             lbTelefonos = (Spinner) findViewById(R.id.LbTelefonos);
             lbEncuestas = (Spinner) findViewById(R.id.LbEncuestas);
+            lbEncuestasPendientes = (TextView) findViewById(R.id.LbEncuestasPendientes);
+            btIniciarEncuesta = (Button) findViewById(R.id.BtIniciarEncuesta);
 
             ArrayList<CEncuesta> _encuestas= null;
 
