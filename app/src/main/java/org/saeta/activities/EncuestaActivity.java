@@ -113,9 +113,9 @@ public class EncuestaActivity extends ActionBarActivity {
 
             DataBaseHandler handler = new DataBaseHandler(EncuestaActivity.this);
 
-            String q = "SELECT * FROM SAETA_ENCUESTAS E " +
-                    " WHERE IDENCUESTA  NOT IN (SELECT ENCUESTA_ID FROM " +
-                    " SAETA_USUARIO_RESPUESTA WHERE TERMINADO =1 );";
+            String q =" SELECT * FROM SAETA_ENCUESTAS E " +
+                    "  WHERE IDENCUESTA  NOT IN (SELECT ENCUESTA_ID FROM " +
+                    "  SAETA_USUARIO_RESPUESTA WHERE TERMINADO =1 );";
             Cursor c = handler.GetCursor(q);
 
             if (c!= null )

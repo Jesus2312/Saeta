@@ -81,7 +81,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "DISTRITO_FEDERAL INTEGER," +
                 " DISTRITO_LOCAL INTEGER ," +
                 " ESTADO TEXT , "+
-                 " ID_DETECTADO INTEGER, " +
+                 " ID_DETECTADO INTEGER PRIMARY KEY, " +
                 " LATITUD TEXT, " +
                 " LONGITUD TEXT, " +
                 " MANZANA TEXT," +

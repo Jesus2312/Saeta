@@ -2,6 +2,7 @@ package org.saeta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -16,6 +17,7 @@ import com.google.gson.GsonBuilder;
 
 import org.saeta.bussiness.CUrls;
 import org.saeta.bussiness.DataBaseHandler;
+import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
@@ -185,46 +187,23 @@ public class AppMenuActivity extends ActionBarActivity {
         {
             DataBaseHandler handler = new DataBaseHandler(this);
 
-            String deleteQuery =" DELETE FROM SAETA_PERSONAS;";
-            handler.ExecuteQuery(deleteQuery);
+            //String deleteQuery =" DELETE FROM SAETA_PERSONAS;";
+           // handler.ExecuteQuery(deleteQuery);
 
             for(CPersona s : personas)
             {
 
-                String queryInsert =" INSERT INTO SAETA_PERSONAS VALUES ('"+ s.getCalle() +"','"+s.getCodigoPostal() +"','"+ s.getColonia()+"', "+
-                        s.getDistritoFederal() + ","+ s.getDistritoLocal() +",'"+s.getEstado()+"',"+ s.getIdDetectado()+" ,'"+s.getLatitud() +"','"+s.getLongitud()+"','"+
-                        s.getManzana()+"','"+s.getMaterno()+"','"+s.getMunicipio() +"','"+s.getNombre()+"','"+s.getNumExterior()+"','"+s.getNumInterior()+"','"+s.getPaterno()+"','"+
-                        s.getSeccion()+"','"+s.getTelefono1()+"','"+s.getTelefono2()+"','"+s.getTelefono3()+"' ,"+s.getEncuestaId() + ");";
+                int rExist =SaetaUtils.QueryExistByCount("SELECT COUNT (*) FROM SAETA_PERSONAS WHERE IDDETECTADO ="+Integer.toString(s.getIdDetectado())+";",this);
 
-                handler.ExecuteQuery(queryInsert);
+                if (rExist!= -1 && rExist> 0 ) {
+                    String queryInsert = " INSERT INTO SAETA_PERSONAS VALUES ('" + s.getCalle() + "','" + s.getCodigoPostal() + "','" + s.getColonia() + "', " +
+                            s.getDistritoFederal() + "," + s.getDistritoLocal() + ",'" + s.getEstado() + "'," + s.getIdDetectado() + " ,'" + s.getLatitud() + "','" + s.getLongitud() + "','" +
+                            s.getManzana() + "','" + s.getMaterno() + "','" + s.getMunicipio() + "','" + s.getNombre() + "','" + s.getNumExterior() + "','" + s.getNumInterior() + "','" + s.getPaterno() + "','" +
+                            s.getSeccion() + "','" + s.getTelefono1() + "','" + s.getTelefono2() + "','" + s.getTelefono3() + "' ," + s.getEncuestaId() + ");";
 
+                    handler.ExecuteQuery(queryInsert);
+                }
 
-
-/*
-
-                ContentValues cv = new ContentValues();
-                cv.put("CALLE", s.getCalle());
-                cv.put("CODIGO_POSTAL",s.getCodigoPostal());
-                cv.put("COLONIA",s.getColonia());
-                cv.put("DISTRITO_FEDERAL",s.getDistritoFederal());
-                cv.put("DISTRITO_LOCAL",s.getDistritoLocal());
-                cv.put("ESTADO",s.getEstado());
-                cv.put("ID_DETECTADO",s.getIdDetectado());
-                cv.put("LATITUD",Float.toString(s.getLatitud()));
-                cv.put("LONGITUD",Float.toString(s.getLongitud()));
-                cv.put("MANZANA",Integer.toString(s.getManzana()));
-                cv.put("APELLIDO_MATERNO",s.getMaterno());
-                cv.put("MUNICIPIO",s.getMunicipio());
-                cv.put("NOMBRE",s.getNombre());
-                cv.put("NUM_EXTERIROR",s.getNumExterior());
-                cv.put("NUM_INTERIOR",s.getNumInterior());
-                cv.put("APELLIDO_PATERNO",s.getPaterno());
-                cv.put("SECCION",Integer.toString(s.getSeccion()));
-                cv.put("TELEFONO_1",s.getTelefono1());
-                cv.put("TELEFONO_2",s.getTelefono2());
-                cv.put("TELEFONO_3",s.getTelefono3());
-                handler.SaveToDataBase(cv,"SAETA_PERSONAS");
-*/
             }
         }
         catch (Exception f ){ throw  f;}
