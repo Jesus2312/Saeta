@@ -5,6 +5,12 @@ package org.saeta.entities;
  */
 public class CPersona {
 
+
+    @Override
+    public  String toString ()
+    {
+        return this.Paterno +" "+ this.Materno +" "+ this.Nombre;
+    }
     public void setCalle(String calle) {
         Calle = calle;
     }

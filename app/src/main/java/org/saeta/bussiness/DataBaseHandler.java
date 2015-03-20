@@ -94,7 +94,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 " SECCION TEXT, " +
                 " TELEFONO_1 TEXT, " +
                 " TELEFONO_2 TEXT, " +
-                " TELEFONO_3 TEXT );";
+                " TELEFONO_3 TEXT, IDENCUESTA NUMBER );";
 
         try
         {

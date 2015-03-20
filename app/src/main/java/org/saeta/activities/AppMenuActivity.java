@@ -194,7 +194,7 @@ public class AppMenuActivity extends ActionBarActivity {
                 String queryInsert =" INSERT INTO SAETA_PERSONAS VALUES ('"+ s.getCalle() +"','"+s.getCodigoPostal() +"','"+ s.getColonia()+"', "+
                         s.getDistritoFederal() + ","+ s.getDistritoLocal() +",'"+s.getEstado()+"',"+ s.getIdDetectado()+" ,'"+s.getLatitud() +"','"+s.getLongitud()+"','"+
                         s.getManzana()+"','"+s.getMaterno()+"','"+s.getMunicipio() +"','"+s.getNombre()+"','"+s.getNumExterior()+"','"+s.getNumInterior()+"','"+s.getPaterno()+"','"+
-                        s.getSeccion()+"','"+s.getTelefono1()+"','"+s.getTelefono2()+"','"+s.getTelefono3()+"' );";
+                        s.getSeccion()+"','"+s.getTelefono1()+"','"+s.getTelefono2()+"','"+s.getTelefono3()+"' ,"+s.getEncuestaId() + ");";
 
                 handler.ExecuteQuery(queryInsert);
 

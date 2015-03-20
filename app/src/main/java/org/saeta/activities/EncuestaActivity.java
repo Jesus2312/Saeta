@@ -16,9 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.saeta.bussiness.DataBaseHandler;
+import org.saeta.bussiness.EncuestaBE;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
+import org.saeta.entities.CPersona;
 import org.saeta.entities.CPregunta;
 import org.saeta.entities.CRespuesta;
 
@@ -33,7 +35,9 @@ public class EncuestaActivity extends ActionBarActivity {
     Spinner lbTelefonos;
     EditText tbMunicipio;
     TextView lbEncuestasPendientes;
+    EditText tbNombre;
     Button btIniciarEncuesta ;
+    Spinner lbPersonas;
     ////
 
     @Override
@@ -47,12 +51,25 @@ public class EncuestaActivity extends ActionBarActivity {
         lbEncuestas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                    CEncuesta cEncuesta = (CEncuesta) lbEncuestas.getSelectedItem();
-                    ShowUserData(cEncuesta);
+                 CEncuesta cEncuesta = (CEncuesta) lbEncuestas.getSelectedItem();
+               // obtener las listas de personas correspondientes a la encuesta seleccionada.
+                ObtenerPersonasAEncuestar(cEncuesta);
+                //ShowUserData(cEncuesta);
+             }
+        @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
+        });
 
+        lbPersonas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                CPersona persona = (CPersona) lbPersonas.getSelectedItem();
+                ShowUserData(persona);
+            }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -60,6 +77,30 @@ public class EncuestaActivity extends ActionBarActivity {
         });
     }
 
+    private  void ObtenerPersonasAEncuestar(CEncuesta encuesta)
+    {
+        try
+        {
+           ArrayList<CPersona> personas= EncuestaBE.ObtenerPersonasAEncuestar(encuesta,this);
+
+            if(personas!= null)
+            {
+                ArrayAdapter<CPersona>  adp  = new ArrayAdapter<CPersona>(this,android.R.layout.simple_spinner_item,personas);
+                lbPersonas.setAdapter(adp);
+                lbEncuestasPendientes.setText("Encuestas Pendientes : "+ personas.size());
+            }
+            else
+            {
+                lbEncuestasPendientes.setText("Encuestas Pendientes : 0");
+                Toast.makeText(this,"No se encotraron personas para realizar este tipo de encuesta.",Toast.LENGTH_LONG).show();
+            }
+
+        }
+        catch (Exception s )
+        {
+             Toast.makeText(this, "Ha ocurrido un error al obtener lista de personas (E016",Toast.LENGTH_LONG).show();
+        }
+    }
 
     private ArrayList<CEncuesta> ObtenerEncuestas () throws Exception
     {
@@ -179,15 +220,13 @@ public class EncuestaActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void ShowUserData (CEncuesta e)
+    private void ShowUserData (CPersona e)
     {
 
-        tbApellidoPaterno.setText(e.getApellidoPaterno());
-        tbApellidoPaterno.setText(e.getMaterno());
+        tbApellidoPaterno.setText(e.getPaterno());
+        tbApellidoMaterno.setText(e.getMaterno());
         tbMunicipio.setText(e.getMunicipio());
-
-        // mostrar telefonos ;
-
+        tbNombre.setText(e.getNombre());
         String [] telefonos =  new String[]{ e.getTelefono1(),e.getTelefono2(),e.getTelefono3()};
         ArrayAdapter<String> adapterTelefonos = new ArrayAdapter<String>(EncuestaActivity.this,android.R.layout.simple_spinner_item,telefonos);
         lbTelefonos.setAdapter(adapterTelefonos);
@@ -206,6 +245,8 @@ public class EncuestaActivity extends ActionBarActivity {
             lbEncuestas = (Spinner) findViewById(R.id.LbEncuestas);
             lbEncuestasPendientes = (TextView) findViewById(R.id.LbEncuestasPendientes);
             btIniciarEncuesta = (Button) findViewById(R.id.BtIniciarEncuesta);
+            lbPersonas = (Spinner) findViewById(R.id.LbPersonas);
+            tbNombre =(EditText) findViewById(R.id.TbNombre);
 
             ArrayList<CEncuesta> _encuestas= null;
 

@@ -16,4 +16,17 @@ public  class SaetaUtils {
             return -1;
         }
     }
+
+    public  static float tryFloatParse (String data)
+    {
+        try
+        {
+            return Float.parseFloat(data);
+        }
+        catch (Exception d)
+        {
+            return 0;
+        }
+
+    }
 }
