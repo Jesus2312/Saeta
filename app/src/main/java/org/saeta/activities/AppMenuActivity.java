@@ -187,23 +187,20 @@ public class AppMenuActivity extends ActionBarActivity {
         {
             DataBaseHandler handler = new DataBaseHandler(this);
 
-            //String deleteQuery =" DELETE FROM SAETA_PERSONAS;";
-           // handler.ExecuteQuery(deleteQuery);
+            String deleteQuery =" DELETE FROM SAETA_PERSONAS;";
+            handler.ExecuteQuery(deleteQuery);
 
             for(CPersona s : personas)
             {
-
-                int rExist =SaetaUtils.QueryExistByCount("SELECT COUNT (*) FROM SAETA_PERSONAS WHERE IDDETECTADO ="+Integer.toString(s.getIdDetectado())+";",this);
-
-                if (rExist!= -1 && rExist> 0 ) {
+                //int rExist =SaetaUtils.QueryExistByCount("SELECT COUNT (*) FROM SAETA_PERSONAS WHERE ID_DETECTADO ="+Integer.toString(s.getIdDetectado())+";",this);
+               // if ( rExist> 0 ) {
                     String queryInsert = " INSERT INTO SAETA_PERSONAS VALUES ('" + s.getCalle() + "','" + s.getCodigoPostal() + "','" + s.getColonia() + "', " +
                             s.getDistritoFederal() + "," + s.getDistritoLocal() + ",'" + s.getEstado() + "'," + s.getIdDetectado() + " ,'" + s.getLatitud() + "','" + s.getLongitud() + "','" +
                             s.getManzana() + "','" + s.getMaterno() + "','" + s.getMunicipio() + "','" + s.getNombre() + "','" + s.getNumExterior() + "','" + s.getNumInterior() + "','" + s.getPaterno() + "','" +
                             s.getSeccion() + "','" + s.getTelefono1() + "','" + s.getTelefono2() + "','" + s.getTelefono3() + "' ," + s.getEncuestaId() + ");";
 
                     handler.ExecuteQuery(queryInsert);
-                }
-
+                //}
             }
         }
         catch (Exception f ){ throw  f;}
