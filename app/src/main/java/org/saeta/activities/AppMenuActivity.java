@@ -3,9 +3,9 @@ package org.saeta.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,14 +14,17 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.saeta.activities.R;
+import org.saeta.bussiness.CUrls;
+import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
+import org.saeta.entities.CPersona;
 import org.saeta.webservice.WsConsume;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class AppMenuActivity extends ActionBarActivity {
 
@@ -65,6 +68,45 @@ public class AppMenuActivity extends ActionBarActivity {
        new asyncHelper(0).execute();
     }
 
+
+    private ArrayList<CPersona> DescargarCatalogoPersonas (CEncuesta [] encuestas) throws  Exception
+    {
+        ArrayList<CPersona> listaPersonas = new ArrayList<CPersona>();
+        String msg= "";
+        try
+        {
+            Debug.waitForDebugger();
+             //Descargar catalogo de persnas por encuestas.
+            String ub = CUrls.CATALOGO_PERSONAS_URL;
+            for (CEncuesta e : encuestas)
+            {
+               CPersona [] temp  ;
+              String url = CUrls.CATALOGO_PERSONAS_URL + e.getIdEncuesta();
+              URL uri = new URL(url);
+              String token = UserSession.TOKEN_KEY;
+              HttpURLConnection con = (HttpURLConnection) uri.openConnection();
+              String strCred = "Bearer "+ token;
+              con.setRequestProperty("Authorization",strCred);
+              InputStream s = con.getInputStream();
+              String result=WsConsume.convertInputStreamToString(s);
+              Gson gson = new GsonBuilder().create();
+              temp = gson.fromJson(result,CPersona[].class);
+              for (CPersona  p : temp)
+              {
+                  if (!listaPersonas.contains(p))
+                  {
+                      p.setEncuestaId(Integer.parseInt(e.getIdEncuesta()));
+                      listaPersonas.add(p);
+                  }
+              }
+           }
+        }
+        catch (Exception d )
+        {
+            throw  d;
+        }
+        return listaPersonas;
+    }
     private String  DescargarEncuestas()
     {
 
@@ -96,6 +138,29 @@ public class AppMenuActivity extends ActionBarActivity {
                 msg="Error al guardar catalogo de encuestas (E009)";
             }
 
+            ArrayList<CPersona> personas= null;
+            try
+            {
+                  personas =DescargarCatalogoPersonas(encuestas);
+            }
+            catch (Exception d )
+            {
+               msg ="Error al descargar catalogo de personas (E012)";
+            }
+
+            try
+            {
+                if (personas.size()>0)
+                {
+                    GuardarCatalogoPersonas(personas);
+                }
+
+            }
+            catch (Exception d)
+            {
+                msg ="Error al guardar  catalogo de personas (E013)";
+            }
+
         }
         catch (Exception f)
         {
@@ -114,7 +179,56 @@ public class AppMenuActivity extends ActionBarActivity {
         }
     }
 
+    private void GuardarCatalogoPersonas (ArrayList<CPersona> personas)
+    {
+        try
+        {
+            DataBaseHandler handler = new DataBaseHandler(this);
 
+            String deleteQuery =" DELETE FROM SAETA_PERSONAS;";
+            handler.ExecuteQuery(deleteQuery);
+
+            for(CPersona s : personas)
+            {
+
+                String queryInsert =" INSERT INTO SAETA_PERSONAS VALUES ('"+ s.getCalle() +"','"+s.getCodigoPostal() +"','"+ s.getColonia()+"', "+
+                        s.getDistritoFederal() + ","+ s.getDistritoLocal() +",'"+s.getEstado()+"',"+ s.getIdDetectado()+" ,'"+s.getLatitud() +"','"+s.getLongitud()+"','"+
+                        s.getManzana()+"','"+s.getMaterno()+"','"+s.getMunicipio() +"','"+s.getNombre()+"','"+s.getNumExterior()+"','"+s.getNumInterior()+"','"+s.getPaterno()+"','"+
+                        s.getSeccion()+"','"+s.getTelefono1()+"','"+s.getTelefono2()+"','"+s.getTelefono3()+"' );";
+
+                handler.ExecuteQuery(queryInsert);
+
+
+
+/*
+
+                ContentValues cv = new ContentValues();
+                cv.put("CALLE", s.getCalle());
+                cv.put("CODIGO_POSTAL",s.getCodigoPostal());
+                cv.put("COLONIA",s.getColonia());
+                cv.put("DISTRITO_FEDERAL",s.getDistritoFederal());
+                cv.put("DISTRITO_LOCAL",s.getDistritoLocal());
+                cv.put("ESTADO",s.getEstado());
+                cv.put("ID_DETECTADO",s.getIdDetectado());
+                cv.put("LATITUD",Float.toString(s.getLatitud()));
+                cv.put("LONGITUD",Float.toString(s.getLongitud()));
+                cv.put("MANZANA",Integer.toString(s.getManzana()));
+                cv.put("APELLIDO_MATERNO",s.getMaterno());
+                cv.put("MUNICIPIO",s.getMunicipio());
+                cv.put("NOMBRE",s.getNombre());
+                cv.put("NUM_EXTERIROR",s.getNumExterior());
+                cv.put("NUM_INTERIOR",s.getNumInterior());
+                cv.put("APELLIDO_PATERNO",s.getPaterno());
+                cv.put("SECCION",Integer.toString(s.getSeccion()));
+                cv.put("TELEFONO_1",s.getTelefono1());
+                cv.put("TELEFONO_2",s.getTelefono2());
+                cv.put("TELEFONO_3",s.getTelefono3());
+                handler.SaveToDataBase(cv,"SAETA_PERSONAS");
+*/
+            }
+        }
+        catch (Exception f ){ throw  f;}
+    }
     class asyncHelper extends AsyncTask<String,String,String >
     {
 

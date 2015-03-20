@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 /**
  * Created by Jesus Lopez on 3/15/2015.
@@ -75,6 +74,27 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "AUDIO_DATA BLOB," +
                 "VIDEO_DATA BLOB" +
                 ");";
+        String str6= " CREATE TABLE SAETA_PERSONAS ( "+
+                  " CALLE TEXT, " +
+                   "CODIGO_POSTAL TEXT," +
+                " COLONIA TEXT, " +
+                "DISTRITO_FEDERAL INTEGER," +
+                " DISTRITO_LOCAL INTEGER ," +
+                " ESTADO TEXT , "+
+                 " ID_DETECTADO INTEGER, " +
+                " LATITUD TEXT, " +
+                " LONGITUD TEXT, " +
+                " MANZANA TEXT," +
+                " APELLIDO_MATERNO TEXT, " +
+                " MUNICIPIO TEXT, " +
+                " NOMBRE TEXT, " +
+                " NUM_EXTERIROR TEXT, " +
+                " NUM_INTERIOR TEXT , " +
+                " APELLIDO_PATERNO TEXT, " +
+                " SECCION TEXT, " +
+                " TELEFONO_1 TEXT, " +
+                " TELEFONO_2 TEXT, " +
+                " TELEFONO_3 TEXT );";
 
         try
         {
@@ -83,7 +103,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
              db.execSQL(str3);
              db.execSQL(str4);
              db.execSQL(str5);
-
+             db.execSQL(str6);
         }
         catch (Exception f)
         {
