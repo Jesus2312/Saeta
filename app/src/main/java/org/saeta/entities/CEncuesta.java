@@ -40,7 +40,8 @@ public class CEncuesta  {
     public String AudioUrl = "";
     public String VideoUrl ="";
     public String PhotoUrl ="";
-
+    public  String Latitud = "";
+    public  String Longitud ="";
 
 
     public ArrayList<CPregunta> getPreguntas(){return Preguntas;}

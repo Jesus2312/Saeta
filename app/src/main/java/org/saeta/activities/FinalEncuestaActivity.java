@@ -25,6 +25,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import org.saeta.activities.R;
+import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
@@ -99,7 +100,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        new asyncSaveEncuetsta().execute();
+                        new asyncSaveEncuetsta(encuestaAGrabar,personaEncuestada).execute();
 
                        // finish();
                         //Toast.makeText(FinalEncuestaActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
@@ -255,9 +256,14 @@ public class FinalEncuestaActivity extends ActionBarActivity {
 
         private LocationManager locationManager;
         private String provider;
-
-        public  asyncSaveEncuetsta()
+        private CEncuesta _e;
+        private CPersona _p;
+        float lat ;
+        float lon;
+        public  asyncSaveEncuetsta(CEncuesta encuesta,CPersona persona)
         {
+            _e= encuesta;
+            _p = persona;
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             provider = locationManager.getBestProvider(criteria, false);
@@ -270,8 +276,8 @@ public class FinalEncuestaActivity extends ActionBarActivity {
             try
             {
                 Location location = locationManager.getLastKnownLocation(provider);
-                float lat = (float)location.getLatitude();
-                float lon = (float) location.getLongitude();
+                 lat = (float)location.getLatitude();
+                 lon = (float) location.getLongitude();
             }
             catch (Exception f)
             {
@@ -282,7 +288,13 @@ public class FinalEncuestaActivity extends ActionBarActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            return null;
+
+           // Setear las coordenadas .
+
+             _e.Latitud =  Float.toString(lat);
+             _e.Longitud = Float.toString(lon);
+             SaveEncuesta(_e,_p);
+             return null;
         }
 
         @Override
