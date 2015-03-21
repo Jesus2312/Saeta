@@ -64,6 +64,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "  REG_ID  INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "  TOKEN_NUMBER  INTEGER NOT NULL, " +
                 "  ENCUESTA_ID  INTEGER, " +
+                "  PERSONA_ID  INTEGER, " +
                 "  PREGUNTA_ID  INTEGER, " +
                 "  RESPUESTA_ID  INTEGER, " +
                 "  FECHA_RESPUESTA  TEXT, " +

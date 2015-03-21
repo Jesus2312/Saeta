@@ -133,7 +133,7 @@ public class CEncuesta  {
 
     }
 
-    public  String GuardarRespuestas ( Context c )
+    public  String GuardarRespuestas ( Context c ,CPersona personaEncuestada)
     {
         String res ="";
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -147,21 +147,15 @@ public class CEncuesta  {
                 ContentValues cv = new ContentValues();
                 cv.put("TOKEN_NUMBER", UserSession.TOKEN_KEY);
                 cv.put("ENCUESTA_ID",this.IdEncuesta);
+                cv.put("PERSONA_ID", personaEncuestada.getIdDetectado());
                 cv.put("PREGUNTA_ID", p.getIdPregunta());
                 cv.put("RESPUESTA_ID",p.getSeleccionado());
                 cv.put("FECHA_RESPUESTA",strDate);
                 cv.put("TERMINADO",1);
                 handler.SaveToDataBase(cv,"SAETA_USUARIO_RESPUESTA");
             }
-
-            // actualizar registro terminado
-            String updQuery =" UPDATE SAETA_ENCUESTAS SET TERMINADO =1 WHERE IDENCUESTA ='"+this.IdEncuesta+"';";
-            handler.ExecuteQuery(updQuery);
-
             // guardar los archivos enbebidos en storage local
-
             SaveMedia(c);
-
             res="1";
         }
         catch (Exception f)

@@ -113,9 +113,7 @@ public class EncuestaActivity extends ActionBarActivity {
 
             DataBaseHandler handler = new DataBaseHandler(EncuestaActivity.this);
 
-            String q =" SELECT * FROM SAETA_ENCUESTAS E " +
-                    "  WHERE IDENCUESTA  NOT IN (SELECT ENCUESTA_ID FROM " +
-                    "  SAETA_USUARIO_RESPUESTA WHERE TERMINADO =1 );";
+            String q =" SELECT * FROM SAETA_ENCUESTAS ";
             Cursor c = handler.GetCursor(q);
 
             if (c!= null )
@@ -272,18 +270,19 @@ public class EncuestaActivity extends ActionBarActivity {
     public void  ClickIniciarEncuesta (View v)
     {
         UserSession.T_ENCUESTA = null;
+        UserSession.T_PERSONA = null;
         CEncuesta k = (CEncuesta)lbEncuestas.getSelectedItem();
+        CPersona p = (CPersona) lbPersonas.getSelectedItem();
         UserSession.T_ENCUESTA=k;
+        UserSession.T_PERSONA =p;
         Intent intent = new Intent("org.saeta.IniciarEncuesta");
         startActivity(intent);
     }
 
     private void MostrarListaEncuestas (ArrayList<CEncuesta> _encuestas)
     {
-
-                ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this, android.R.layout.simple_spinner_item, _encuestas);
+           ArrayAdapter<CEncuesta> encuestaArrayAdapter = new ArrayAdapter<CEncuesta>(EncuestaActivity.this, android.R.layout.simple_spinner_item, _encuestas);
                 lbEncuestas.setAdapter(encuestaArrayAdapter);
-
       }
 
 

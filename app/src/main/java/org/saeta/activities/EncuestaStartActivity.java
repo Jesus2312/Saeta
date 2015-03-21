@@ -24,6 +24,7 @@ import android.widget.VideoView;
 
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
+import org.saeta.entities.CPersona;
 import org.saeta.entities.CPregunta;
 import org.saeta.entities.CRespuesta;
 
@@ -35,11 +36,13 @@ public class EncuestaStartActivity extends ActionBarActivity  {
 
     static  final int REQUEST_VIDEO_CAPTURE =1;
     private CEncuesta encuesta;
+    private CPersona persona;
     private  RadioGroup rbGroup;
     private TextView lblTituloPregunta;
     private ListIterator<CPregunta> iterator = null;
     private MediaRecorder mRecorder = null;
     private boolean isRecording= false;
+    TextView lbNombrePersona;
     Button btNext;
     LinearLayout ly ;
     RecordAudioButton rcbutton;
@@ -53,10 +56,12 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         setContentView(R.layout.activity_encuesta_start);
         rbGroup = (RadioGroup) findViewById(R.id.RbGroup);
         lblTituloPregunta = (TextView) findViewById(R.id.LblTituloPregunta);
+        lbNombrePersona = (TextView) findViewById(R.id.LbNombrePersona);
         btNext= (Button) findViewById(R.id.BtSiguiente);
         ly = (LinearLayout) findViewById(R.id.ly2);
         rcbutton = new RecordAudioButton(this);
         ly.addView(rcbutton);
+
 
     //    btBack = (Button) findViewById(R.id.BtAnterior);
         MostrarEncusta();
@@ -110,8 +115,11 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         try
         {
             encuesta= UserSession.T_ENCUESTA;
-            if (encuesta!= null)
+            persona = UserSession.T_PERSONA;
+
+            if (encuesta!= null && persona != null)
             {
+                lbNombrePersona.setText(persona.toString());
                 iterator= encuesta.getPreguntas().listIterator();
                 CPregunta p = iterator.next();
                 lblTituloPregunta.setText(p.getPregunta());
@@ -137,24 +145,32 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         if(encuesta!= null)
         {
 
-                int resp = rbGroup.getCheckedRadioButtonId();
-                if (resp < 0)
-                {
-                    Toast.makeText(this, "Favor de seleccionar una respusta para continuar", Toast.LENGTH_LONG).show();
-                    return;
-                }
+
+           int resp = rbGroup.getCheckedRadioButtonId();
+           if (resp < 0)
+           {
+              Toast.makeText(this, "Favor de seleccionar una respusta para continuar", Toast.LENGTH_LONG).show();
+              return;
+           }
             int curr = iterator.nextIndex()-1; // posicion actual del iterador
             encuesta.getPreguntas().get(curr).Seleccionado = Integer.toString(resp); // guardar la respuesta
             // Si hay mas preguntas avansar el apuntador .
-            if(iterator.hasNext()){
+            if(iterator.hasNext())
+            {
                 CPregunta pregunta = iterator.next();
                 lblTituloPregunta.setText(pregunta.getPregunta());
                 DrawRespuestas(pregunta);
+
+                if (!iterator.hasNext())
+                {
+                    btNext.setText("Finalizar Encuesta");
+                     // Deshabilitar botones Media
+                }
+
             }
-            else
+            else if (btNext.getText()=="Finalizar Encuesta")
             {
-                btNext.setText("Finalizar Encuesta");
-                String r =  encuesta.GuardarRespuestas(this);
+                String r =  encuesta.GuardarRespuestas(this,persona);
                 if(r!="1")
                 {
                     Toast.makeText(this,"Error: " +r,Toast.LENGTH_LONG).show();
@@ -163,7 +179,11 @@ public class EncuestaStartActivity extends ActionBarActivity  {
                 {
                     Toast.makeText(this, "Encuesta guardada correctamente.", Toast.LENGTH_LONG).show();
                 }
+            }
 
+            else if(!iterator.hasNext()&& encuesta.getPreguntas().size()==1)
+            {
+                btNext.setText("Finalizar Encuesta");
             }
         }
     }
