@@ -43,27 +43,8 @@
                     android:id="@+id/RbGroup"></RadioGroup>
             </LinearLayout>
 
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Video"
-                android:id="@+id/button4"
-                android:onClick="capturarVideo" />
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/StrBtSiguiente"
-                    android:id="@+id/BtAnterior"
-                    android:onClick="btAnteriorClick"
-                    android:visibility="invisible" />
-
-                <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/StrBtAnterior"
                     android:id="@+id/BtSiguiente"
@@ -71,7 +52,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:onClick="btSiguienteClick" />
-            </RelativeLayout>
+
 
         </LinearLayout>
     </ScrollView>

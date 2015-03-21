@@ -71,7 +71,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "  TERMINADO  INTEGER " +
                 ");";
         String str5 =" CREATE TABLE ENCUESTA_MEDIA (" +
-                "IDENCUESTA INTEGER , IDPREGUNTA INTEGER" +
+                "IDENCUESTA INTEGER , ID_DETECTADO INTEGER" +
                 "AUDIO_DATA BLOB," +
                 "VIDEO_DATA BLOB" +
                 ");";

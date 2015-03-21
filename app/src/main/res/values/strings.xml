@@ -13,5 +13,6 @@
     <string name="StrBtSiguiente">Anterior</string>
     <string name="StrBtAnterior">Siguiente</string>
     <string name="title_activity_app_menu">AppMenuActivity</string>
+    <string name="title_activity_final_encuesta">FinalEncuestaActivity</string>
 
 </resources>

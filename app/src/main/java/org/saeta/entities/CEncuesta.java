@@ -3,6 +3,7 @@ package org.saeta.entities;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.MediaStore;
 
 import org.apache.http.util.ByteArrayBuffer;
 import org.saeta.bussiness.DataBaseHandler;
@@ -36,6 +37,10 @@ public class CEncuesta  {
     public String Telefono2 ="";
     public String Telefono3 ="";
     public ArrayList<CPregunta> Preguntas = new ArrayList<CPregunta>();
+    public String AudioUrl = "";
+    public String VideoUrl ="";
+    public String PhotoUrl ="";
+
 
 
     public ArrayList<CPregunta> getPreguntas(){return Preguntas;}
@@ -155,7 +160,7 @@ public class CEncuesta  {
                 handler.SaveToDataBase(cv,"SAETA_USUARIO_RESPUESTA");
             }
             // guardar los archivos enbebidos en storage local
-            SaveMedia(c);
+            SaveMedia(c, personaEncuestada.getIdDetectado());
             res="1";
         }
         catch (Exception f)
@@ -165,7 +170,7 @@ public class CEncuesta  {
         return res;
     }
 
-    private void SaveMedia (Context c) throws Exception
+    private void SaveMedia (Context c, int idDetectado) throws Exception
     {
         try
         {
@@ -173,12 +178,10 @@ public class CEncuesta  {
             byte[] video = null;
             // guardar audio
 
-            for(CPregunta p : Preguntas) {
-
-                if (p.VideoUrl != "" || p.AudioUrl != "") {
+               if (this.VideoUrl != "" || this.AudioUrl != "") {
                     // coneitene audio file
-                    if (p.AudioUrl != "") {
-                        File file = new File(p.AudioUrl);
+                    if (this.AudioUrl != "") {
+                        File file = new File(this.AudioUrl);
                         InputStream fis = new FileInputStream(file);
                         BufferedInputStream bis = new BufferedInputStream(fis, 128);
                         ByteArrayBuffer baf = new ByteArrayBuffer(128);
@@ -195,9 +198,9 @@ public class CEncuesta  {
 
                     }
 
-                    if (p.VideoUrl != "") {
+                    if (this.VideoUrl != "") {
                         //File file = new File(p.VideoUrl);
-                        FileInputStream fin= new FileInputStream(p.VideoUrl);
+                        FileInputStream fin= new FileInputStream(this.VideoUrl);
                        // InputStream fis = new FileInputStream(file);
                         BufferedInputStream bis = new BufferedInputStream(fin);
                         ByteArrayBuffer baf = new ByteArrayBuffer(128);
@@ -209,8 +212,8 @@ public class CEncuesta  {
                     }
 
                     ContentValues cv = new ContentValues();
-                    cv.put("IDENCUESTA", p.getIdEncuesta());
-                    cv.put("IDPREGUNTA", p.getIdPregunta());
+                    cv.put("IDENCUESTA", this.getIdEncuesta());
+                    cv.put("ID_DETECTADO", idDetectado);
 
                     if (audio != null) {
                         cv.put("AUDIO_DATA", audio);
@@ -222,7 +225,7 @@ public class CEncuesta  {
                     DataBaseHandler h = new DataBaseHandler(c);
                     h.SaveToDataBase(cv, "ENCUESTA_MEDIA");
                 }
-            }
+
         }
         catch (Exception f )
         {

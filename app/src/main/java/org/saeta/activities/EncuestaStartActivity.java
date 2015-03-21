@@ -45,7 +45,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
     TextView lbNombrePersona;
     Button btNext;
     LinearLayout ly ;
-    RecordAudioButton rcbutton;
+   // RecordAudioButton rcbutton;
     Intent takeVideoIntent;
     VideoView videoView = null;
 
@@ -59,8 +59,8 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         lbNombrePersona = (TextView) findViewById(R.id.LbNombrePersona);
         btNext= (Button) findViewById(R.id.BtSiguiente);
         ly = (LinearLayout) findViewById(R.id.ly2);
-        rcbutton = new RecordAudioButton(this);
-        ly.addView(rcbutton);
+       // rcbutton = new RecordAudioButton(this);
+       // ly.addView(rcbutton);
 
 
     //    btBack = (Button) findViewById(R.id.BtAnterior);
@@ -170,15 +170,22 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             }
             else if (btNext.getText()=="Finalizar Encuesta")
             {
-                String r =  encuesta.GuardarRespuestas(this,persona);
-                if(r!="1")
-                {
-                    Toast.makeText(this,"Error: " +r,Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    Toast.makeText(this, "Encuesta guardada correctamente.", Toast.LENGTH_LONG).show();
-                }
+                // Mostrar siguiente Actividad
+                UserSession.T_ENCUESTA = encuesta;
+                UserSession.T_PERSONA = persona;
+
+                startActivity(new Intent("org.saeta.FinalEncuesta"));
+
+
+//                String r =  encuesta.GuardarRespuestas(this,persona);
+//                if(r!="1")
+//                {
+//                    Toast.makeText(this,"Error: " +r,Toast.LENGTH_LONG).show();
+//                }
+//                else
+//                {
+//                    Toast.makeText(this, "Encuesta guardada correctamente.", Toast.LENGTH_LONG).show();
+//                }
             }
 
             else if(!iterator.hasNext()&& encuesta.getPreguntas().size()==1)
@@ -317,7 +324,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             Toast.makeText(this, "Error al grabar audio " + d.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-    class  RecordAudioButton extends   Button{
+    /*class  RecordAudioButton extends   Button{
         boolean mStartRecording = true;
 
         public RecordAudioButton(Context context) {
@@ -343,6 +350,6 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         };
 
 
-    }
+    }*/
 
 }

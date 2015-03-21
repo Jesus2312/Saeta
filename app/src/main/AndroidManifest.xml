@@ -4,9 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-   <uses-feature android:name="android.hardware.Camera" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <uses-feature android:name="android.hardware.Camera" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -46,9 +50,19 @@
         <activity
             android:name=".AppMenuActivity"
             android:label="@string/title_activity_app_menu" >
-
             <intent-filter>
                 <action android:name="org.saeta.MenuApp" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FinalEncuestaActivity"
+            android:label="@string/title_activity_final_encuesta" >
+
+
+            <intent-filter>
+                <action android:name="org.saeta.FinalEncuesta" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
