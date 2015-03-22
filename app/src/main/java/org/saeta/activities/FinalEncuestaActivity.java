@@ -1,6 +1,7 @@
 package org.saeta.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Debug;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
     private CPersona personaEncuestada = null;
     RecordAudioButton recordAudioButton = null;
     LinearLayout masterL = null;
+    private ProgressDialog dialog;
 
 
 
@@ -110,17 +113,29 @@ public class FinalEncuestaActivity extends ActionBarActivity {
     }
 
 
-    private void SaveEncuesta( CEncuesta e, CPersona p)
+    private int  SaveEncuesta( CEncuesta e, CPersona p)
     {
+        int i=0;
         try
         {
-            e.GuardarRespuestas(this,p);
+
+            Debug.waitForDebugger();
+            String r=e.GuardarRespuestas(this,p);
+            if (r.equals("1"))
+            {
+                i =1;
+            }
+            else
+            {
+                i=0;
+            }
 
         }
         catch (Exception f)
         {
-
+            i =0;
         }
+        return  i ;
     }
 
     private void onRecord(boolean start)
@@ -260,6 +275,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         private CPersona _p;
         float lat ;
         float lon;
+        int saveResult;
         public  asyncSaveEncuetsta(CEncuesta encuesta,CPersona persona)
         {
             _e= encuesta;
@@ -275,6 +291,11 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         {
             try
             {
+                dialog= new ProgressDialog(FinalEncuestaActivity.this);
+                dialog.setMessage("Guardando encuesta porfavor espere...");
+                dialog.setIndeterminate(false);
+                dialog.setCancelable(false);
+                dialog.show();
                 Location location = locationManager.getLastKnownLocation(provider);
                  lat = (float)location.getLatitude();
                  lon = (float) location.getLongitude();
@@ -291,10 +312,22 @@ public class FinalEncuestaActivity extends ActionBarActivity {
 
            // Setear las coordenadas .
 
+            int f ;
              _e.Latitud =  Float.toString(lat);
              _e.Longitud = Float.toString(lon);
-             SaveEncuesta(_e,_p);
-             return null;
+             saveResult= SaveEncuesta(_e,_p);
+             return  null;
+        }
+
+        @Override
+        protected  void onPostExecute (String f)
+        {
+            UserSession.T_ENCUESTA = null;
+            UserSession.T_PERSONA = null;
+            UserSession.SAVE_OK_FLAG= saveResult;
+            dialog.setTitle("Encuesta guardada!");
+            dialog.dismiss();
+            finish();
         }
 
         @Override

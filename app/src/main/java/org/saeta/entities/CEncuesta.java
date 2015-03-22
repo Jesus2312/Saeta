@@ -215,13 +215,9 @@ public class CEncuesta  {
                     ContentValues cv = new ContentValues();
                     cv.put("IDENCUESTA", this.getIdEncuesta());
                     cv.put("ID_DETECTADO", idDetectado);
-
-                    if (audio != null) {
-                        cv.put("AUDIO_DATA", audio);
-                    }
-                    if (video != null) {
-                        cv.put("VIDEO_DATA", video);
-                    }
+                    cv.put("PHOTO_DATA","");
+                    cv.put("AUDIO_DATA", audio);
+                    cv.put("VIDEO_DATA", video);
 
                     DataBaseHandler h = new DataBaseHandler(c);
                     h.SaveToDataBase(cv, "ENCUESTA_MEDIA");

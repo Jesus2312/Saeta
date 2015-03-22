@@ -173,10 +173,8 @@ public class EncuestaStartActivity extends ActionBarActivity  {
                 // Mostrar siguiente Actividad
                 UserSession.T_ENCUESTA = encuesta;
                 UserSession.T_PERSONA = persona;
-
                 startActivity(new Intent("org.saeta.FinalEncuesta"));
-
-
+                finish();
 //                String r =  encuesta.GuardarRespuestas(this,persona);
 //                if(r!="1")
 //                {

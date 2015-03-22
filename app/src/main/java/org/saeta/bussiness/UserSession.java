@@ -10,6 +10,7 @@ public class UserSession {
 
     public  static  String USER_NAME ;
     public  static  String TOKEN_KEY;
+    public  static  int  SAVE_OK_FLAG;
     public   static   String TOKEN_TYPE;
     public static CEncuesta T_ENCUESTA ;
     public  static CPersona T_PERSONA;

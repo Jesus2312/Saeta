@@ -173,6 +173,21 @@ public class AppMenuActivity extends ActionBarActivity {
         return msg;
     }
 
+    @Override
+    public void onResume ()
+    {
+        super.onResume();
+        if (UserSession.SAVE_OK_FLAG==1)
+        {
+            Toast.makeText(this, "Encuesta guardada correctamente ",Toast.LENGTH_LONG).show();
+        }
+        else  if (UserSession.SAVE_OK_FLAG ==0)
+        {
+            Toast.makeText(this, "Error al guardar encuesta ",Toast.LENGTH_LONG).show();
+        }
+
+    }
+
     private  void GuardarEncuestas(CEncuesta[] encuestas)
     {
         for(CEncuesta d : encuestas)

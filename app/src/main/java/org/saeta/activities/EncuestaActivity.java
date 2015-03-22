@@ -277,6 +277,7 @@ public class EncuestaActivity extends ActionBarActivity {
         UserSession.T_PERSONA =p;
         Intent intent = new Intent("org.saeta.IniciarEncuesta");
         startActivity(intent);
+        finish();
     }
 
     private void MostrarListaEncuestas (ArrayList<CEncuesta> _encuestas)
