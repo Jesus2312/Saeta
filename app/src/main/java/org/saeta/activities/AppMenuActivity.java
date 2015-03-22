@@ -180,12 +180,13 @@ public class AppMenuActivity extends ActionBarActivity {
         if (UserSession.SAVE_OK_FLAG==1)
         {
             Toast.makeText(this, "Encuesta guardada correctamente ",Toast.LENGTH_LONG).show();
+            UserSession.SAVE_OK_FLAG =-1;
         }
         else  if (UserSession.SAVE_OK_FLAG ==0)
         {
             Toast.makeText(this, "Error al guardar encuesta ",Toast.LENGTH_LONG).show();
+            UserSession.SAVE_OK_FLAG = -1;
         }
-
     }
 
     private  void GuardarEncuestas(CEncuesta[] encuestas)

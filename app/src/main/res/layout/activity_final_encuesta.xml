@@ -27,13 +27,6 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Grabar Audio"
-        android:id="@+id/BtRecordAudio"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:text="Tomar Fotografia"
         android:id="@+id/button7"
         android:layout_gravity="center_horizontal" />
