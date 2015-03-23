@@ -1,8 +1,14 @@
 package org.saeta.activities;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -19,6 +25,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.saeta.bussiness.DataBaseHandler;
+import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.webservice.WsConsume;
@@ -39,6 +46,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void Click (View v)
     {
+
+        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nf = manager.getActiveNetworkInfo();
+
+
+
         String user = LblUserName.getText().toString();
         String pass = LblPassword.getText().toString();
 
@@ -49,8 +62,25 @@ public class MainActivity extends ActionBarActivity {
         }
         else
         {
-             Debug.waitForDebugger();
-             new MainActivityServices().execute();
+            // Debug.waitForDebugger();
+
+            if (nf ==null)
+            {
+                String q =" Select count (*) from user_login where username ='"+ user+"' and password='"+ pass+"';";
+                int e =SaetaUtils.QueryExistByCount(q,MainActivity.this);
+
+                if (e>0 )
+                {
+                    startActivity(new Intent("org.saeta.MenuApp"));
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this,"Usuario no valido",Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
+                new MainActivityServices().execute();
+            }
         }
     }
 
@@ -107,7 +137,10 @@ public class MainActivity extends ActionBarActivity {
         String opResult= null;
         try
         {
-            Debug.waitForDebugger();
+
+
+
+            //Debug.waitForDebugger();
             WsConsume consumer =new WsConsume("http://api.saeta.org.mx/Token");
 
             ArrayList<NameValuePair> param = new ArrayList<NameValuePair>();
@@ -131,6 +164,14 @@ public class MainActivity extends ActionBarActivity {
                UserSession.TOKEN_KEY= token;
                UserSession.TOKEN_TYPE= tokenType;
                UserSession.USER_NAME= userName;
+
+            DataBaseHandler handler = new DataBaseHandler(MainActivity.this);
+
+            ContentValues cv = new ContentValues();
+            cv.put("TOKEN",token);
+            cv.put("USERNAME",userName);
+            cv.put("PASSWORD", pass);
+            handler.SaveToDataBase(cv,"USER_LOGIN");
             //
 
             opResult="1";

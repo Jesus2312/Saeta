@@ -68,7 +68,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "  PREGUNTA_ID  INTEGER, " +
                 "  RESPUESTA_ID  INTEGER, " +
                 "  FECHA_RESPUESTA  TEXT, " +
-                "  TERMINADO  INTEGER " +
+                "  TERMINADO  INTEGER," +
+                "  R_LATITUD TEXT, " +
+                "  R_LONGITUD TEXT  " +
                 ");";
         String str5 =" CREATE TABLE ENCUESTA_MEDIA (" +
                 "IDENCUESTA INTEGER , ID_DETECTADO INTEGER ," +
@@ -97,6 +99,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 " TELEFONO_2 TEXT, " +
                 " TELEFONO_3 TEXT, IDENCUESTA NUMBER );";
 
+        String ct7 =" CREATE TABLE USER_LOGIN (" +
+                "TOKEN TEXT, " +
+                "USERNAME TEXT, " +
+                "PASSWORD TEXT " +
+                " );";
+
+
         try
         {
              db.execSQL(str1);
@@ -105,6 +114,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
              db.execSQL(str4);
              db.execSQL(str5);
              db.execSQL(str6);
+             db.execSQL(ct7);
         }
         catch (Exception f)
         {

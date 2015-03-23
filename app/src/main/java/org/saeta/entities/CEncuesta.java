@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import com.google.gson.annotations.Expose;
+
 import org.apache.http.util.ByteArrayBuffer;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.UserSession;
@@ -25,24 +27,35 @@ public class CEncuesta  {
 
     public final  static  String  TABLE_NAME ="SAETA_ENCUESTAS";
 
+    @Expose
     public String IdEncuesta  ="";
+    @Expose
     public String Encuesta ="";
+    @Expose
     public String IdDetectado ="";
+    @Expose
     public  String IdProceso="";
+    @Expose
     public String Municipio="";
+    @Expose
     public String Paterno ="";
+    @Expose
     public String Materno ="" ;
+    @Expose
     public String Nombre ="";
+    @Expose
     public String Telefono1 ="";
+    @Expose
     public String Telefono2 ="";
+    @Expose
     public String Telefono3 ="";
+    @Expose
     public ArrayList<CPregunta> Preguntas = new ArrayList<CPregunta>();
     public String AudioUrl = "";
     public String VideoUrl ="";
     public String PhotoUrl ="";
     public  String Latitud = "";
     public  String Longitud ="";
-
 
     public ArrayList<CPregunta> getPreguntas(){return Preguntas;}
 
@@ -158,6 +171,8 @@ public class CEncuesta  {
                 cv.put("RESPUESTA_ID",p.getSeleccionado());
                 cv.put("FECHA_RESPUESTA",strDate);
                 cv.put("TERMINADO",1);
+                cv.put("R_LATITUD",this.Latitud );
+                cv.put("R_LONGITUD",this.Longitud);
                 handler.SaveToDataBase(cv,"SAETA_USUARIO_RESPUESTA");
             }
             // guardar los archivos enbebidos en storage local

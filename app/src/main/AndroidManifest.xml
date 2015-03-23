@@ -6,19 +6,20 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-feature android:name="android.hardware.Camera" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+         android:icon="@drawable/saeta_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="SAETA"
+           >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +32,7 @@
         </activity>
         <activity
             android:name=".EncuestaActivity"
-            android:label="@string/title_activity_encuesta" >
+            android:label="SAETA" >
             <intent-filter>
                 <action android:name="org.saeta.EncuestaActivity" />
 
@@ -40,7 +41,7 @@
         </activity>
         <activity
             android:name=".EncuestaStartActivity"
-            android:label="@string/title_activity_encuesta_start" >
+            android:label="SAETA" >
             <intent-filter>
                 <action android:name="org.saeta.IniciarEncuesta" />
 
@@ -49,7 +50,7 @@
         </activity>
         <activity
             android:name=".AppMenuActivity"
-            android:label="@string/title_activity_app_menu" >
+            android:label="SAETA" >
             <intent-filter>
                 <action android:name="org.saeta.MenuApp" />
 
@@ -58,13 +59,21 @@
         </activity>
         <activity
             android:name=".FinalEncuestaActivity"
-            android:label="@string/title_activity_final_encuesta" >
-
-
+            android:label="SAETA" >
             <intent-filter>
                 <action android:name="org.saeta.FinalEncuesta" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LocatorActivity"
+            android:label="SAETA" >
+
+            <intent-filter>
+            <action android:name="org.saeta.locator" />
+
+            <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>

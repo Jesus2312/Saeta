@@ -7,19 +7,31 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
+import org.saeta.bussiness.UserSession;
+import org.saeta.entities.CEncuesta;
+import org.saeta.entities.CPersona;
+import org.saeta.entities.CPregunta;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jlopez on 3/10/2015.
@@ -140,6 +152,8 @@ public class WsConsume {
             DefaultHttpClient client = new DefaultHttpClient();
             HttpResponse response;
             HttpPost post = new HttpPost(this._url);
+   //         UrlEncodedFormEntity entity = new UrlEncodedFormEntity(this.wsParameters);
+     //       post.setEntity(entity);
             post.setEntity(new UrlEncodedFormEntity(this.wsParameters));
             response= client.execute(post);
 
@@ -162,6 +176,94 @@ public class WsConsume {
         return  result;
     }
 
+    public ArrayList<NameValuePair> FEncode(CEncuesta f)
+    {
+        ArrayList<NameValuePair> l = new ArrayList<NameValuePair>();
+        try
+        {
+            l.add(new BasicNameValuePair("Encuesta",f.Encuesta));
+            l.add( new BasicNameValuePair("IdDetectado",f.IdDetectado));
+            l.add( new BasicNameValuePair("IdEncuesta",f.IdEncuesta));
+            l.add( new BasicNameValuePair("IdProceso",f.IdProceso));
+            l.add( new BasicNameValuePair("Materno",f.Materno));
+            l.add( new BasicNameValuePair("Nombre",f.Nombre));
+
+            int idx = 0;
+            for(CPregunta p : f.Preguntas)
+            {
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][IdPregunta]",String.valueOf(p.IdPregunta)));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][IdEncuesta]",String.valueOf(p.IdEncuesta)));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][Pregunta]",p.Pregunta));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][MultiRespuesta]",String.valueOf(p.MultiRespuesta)));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][Seleccionado]",String.valueOf(p.Seleccionado)));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][Respuestas]",""));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][Checked]",String.valueOf(p.Seleccionado)));
+                idx+=1;
+            }
+
+
+        }
+        catch (Exception n)
+        {
+           l = null;
+        }
+        return  l;
+    }
+
+    public  String wsPostRequest(String token,CEncuesta p)
+    {
+        String res ="";
+        try
+        {
+            ArrayList<NameValuePair> l = FEncode(p);
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+            HttpPost post = new HttpPost(this._url);
+            String x = "Bearer " + UserSession.TOKEN_KEY;
+            post.setHeader("Authorization",x);
+            post.setEntity(new UrlEncodedFormEntity(l));
+            response= client.execute(post);
+            InputStream stream = response.getEntity().getContent();
+            String json = convertInputStreamToString(stream);
+            res= json;
+       }
+        catch (Exception e)
+        {
+
+        }
+        return  res;
+    }
+
+
+//    public  String wsPostRequest(String data,String token)
+//    {
+//        String res ="";
+//        try
+//        {
+//            URL url=  new URL("http://api.saeta.org.mx/Auditoria");
+//            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+//            httpCon.setDoInput(true);
+//            httpCon.setDoOutput(true);
+//            String strCred = "Bearer "+ token;
+//            httpCon.setRequestProperty("Authorization",strCred);
+//            httpCon.setRequestMethod("POST");
+//            OutputStream os = httpCon.getOutputStream();
+//            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+//            osw.write(data);
+//            osw.flush();
+//            osw.close();
+//
+//            InputStream is = httpCon.getInputStream();
+//            String result=WsConsume.convertInputStreamToString(is);
+//            System.out.println(result);
+//        }
+//        catch (Exception e)
+//        {
+//
+//        }
+//        return  res;
+//    }
+//
 
     public String wsGetRequest(ArrayList<HttpParams> args)
     {

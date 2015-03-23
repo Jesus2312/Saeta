@@ -19,7 +19,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Descargar Catalogos"
+        android:text="Descargar Auditorias"
         android:id="@+id/button3"
         android:layout_gravity="center_horizontal"
         android:onClick="DescargaEncuestasClick" />
@@ -27,14 +27,9 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Localizador"
+        android:text="Subir Auditorias"
         android:id="@+id/button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="SubirEncuestasClick" />
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Encuestas Realizadas"
-        android:id="@+id/button5"
-        android:layout_gravity="center_horizontal" />
 </LinearLayout>

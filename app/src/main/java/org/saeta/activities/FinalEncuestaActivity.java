@@ -95,21 +95,29 @@ public class FinalEncuestaActivity extends ActionBarActivity {
 
     private void GetDialog ()
     {
-        new AlertDialog.Builder(this)
-                .setTitle("Finalizar Encuesta")
-                .setMessage("Desea guardar esta en cuesta sin fotografia/audio/video?")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
+        if (encuestaAGrabar.VideoUrl.equals("")&& encuestaAGrabar.AudioUrl.equals("")) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Finalizar Encuesta")
+                    .setMessage("Desea guardar esta en cuesta sin fotografia/audio/video?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                        new asyncSaveEncuetsta(encuestaAGrabar,personaEncuestada).execute();
+                        public void onClick(DialogInterface dialog, int whichButton) {
 
-                       // finish();
-                        //Toast.makeText(FinalEncuestaActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
+                            new asyncSaveEncuetsta(encuestaAGrabar, personaEncuestada).execute();
 
-                    }})
-                .setNegativeButton(android.R.string.no, null).show();
+                            // finish();
+                            //Toast.makeText(FinalEncuestaActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
+
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+        }
+        else
+        {
+            new asyncSaveEncuetsta(encuestaAGrabar,personaEncuestada).execute();
+        }
     }
 
 
@@ -118,8 +126,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         int i=0;
         try
         {
-
-            Debug.waitForDebugger();
+             ////   Debug.waitForDebugger();
             String r=e.GuardarRespuestas(this,p);
             if (r.equals("1"))
             {

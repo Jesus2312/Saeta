@@ -17,20 +17,6 @@
 
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Encuestas Disponibles"
-                android:id="@+id/textView5"
-                android:layout_gravity="center_horizontal" />
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/LbEncuestas"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -107,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Municipio"
+                android:text="Domicilio"
                 android:id="@+id/textView11" />
 
             <EditText
@@ -116,6 +102,19 @@
                 android:enabled="false"
                 android:id="@+id/TbMunicipio" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Colonia"
+                android:id="@+id/textView1r" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:id="@+id/TbColonia" />
+
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -123,6 +122,13 @@
                 android:id="@+id/BtIniciarEncuesta"
                 android:layout_gravity="center_horizontal"
                 android:onClick="ClickIniciarEncuesta" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Localizar"
+                android:id="@+id/btLocator"
+                android:onClick="LocatorClick" />
 
 
         </LinearLayout>

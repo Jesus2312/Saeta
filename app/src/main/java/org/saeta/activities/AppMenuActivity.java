@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 
 import org.saeta.bussiness.CUrls;
 import org.saeta.bussiness.DataBaseHandler;
+import org.saeta.bussiness.EncuestaBE;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
@@ -77,7 +78,7 @@ public class AppMenuActivity extends ActionBarActivity {
         String msg= "";
         try
         {
-            Debug.waitForDebugger();
+             Debug.waitForDebugger();
              //Descargar catalogo de persnas por encuestas.
             String ub = CUrls.CATALOGO_PERSONAS_URL;
             for (CEncuesta e : encuestas)
@@ -109,6 +110,13 @@ public class AppMenuActivity extends ActionBarActivity {
         }
         return listaPersonas;
     }
+
+    public void SubirEncuestasClick(View c)
+    {
+        new asyncHelper(1).execute();
+    }
+
+
     private String  DescargarEncuestas()
     {
 
@@ -197,6 +205,13 @@ public class AppMenuActivity extends ActionBarActivity {
         }
     }
 
+    private String PostRespuestas ()
+    {
+       //Debug.waitForDebugger();
+        String r= EncuestaBE.SubirEncuestas(AppMenuActivity.this);
+        return  r;
+    }
+
     private void GuardarCatalogoPersonas (ArrayList<CPersona> personas)
     {
         try
@@ -236,7 +251,14 @@ public class AppMenuActivity extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             dialog= new ProgressDialog(AppMenuActivity.this);
-            dialog.setMessage("Descargando catalogo de encuestas porfavor espere...");
+            switch (_action)
+            {
+                case  0:
+                    dialog.setMessage("Descargando catalogo de encuestas porfavor espere...");
+                    break;
+                case 1:
+                    dialog.setMessage("Subiendo auditorias porfavor espere...");
+            }
             dialog.setIndeterminate(false);
             dialog.setCancelable(false);
             dialog.show();
@@ -248,6 +270,10 @@ public class AppMenuActivity extends ActionBarActivity {
             {
                 case  0:
                    msg= DescargarEncuestas();
+                    break;
+
+                case 1:
+                   msg= PostRespuestas();
                     break;
 
             }
@@ -265,6 +291,7 @@ public class AppMenuActivity extends ActionBarActivity {
 
                     if (msg!= "1")
                     {
+                        Toast.makeText(AppMenuActivity.this,"Error al descargar catalogo",Toast.LENGTH_LONG).show();
 
                     }
                     else
@@ -272,9 +299,14 @@ public class AppMenuActivity extends ActionBarActivity {
                         Toast.makeText(AppMenuActivity.this,"Catalogo descargado correctamente",Toast.LENGTH_LONG).show();
                     }
                  break;
-
-            }
-
+                case 1:
+                    dialog.dismiss();
+                    if( msg=="1")
+                    Toast.makeText(AppMenuActivity.this,"Auditorias subidas correctamente",Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(AppMenuActivity.this,"Error: "+ msg,Toast.LENGTH_LONG).show();
+                    break;
+ }
         }
     }
 }

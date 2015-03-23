@@ -37,6 +37,7 @@ public class EncuestaActivity extends ActionBarActivity {
     TextView lbEncuestasPendientes;
     EditText tbNombre;
     Button btIniciarEncuesta ;
+    EditText tbColonia;
     Spinner lbPersonas;
     ////
 
@@ -48,26 +49,51 @@ public class EncuestaActivity extends ActionBarActivity {
       //  h.execute();
       //  ObtenerEncuestas();
 
-        lbEncuestas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                 CEncuesta cEncuesta = (CEncuesta) lbEncuestas.getSelectedItem();
-               // obtener las listas de personas correspondientes a la encuesta seleccionada.
-                ObtenerPersonasAEncuestar(cEncuesta);
-                //ShowUserData(cEncuesta);
-             }
-        @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//        lbEncuestas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                 CEncuesta cEncuesta = (CEncuesta) lbEncuestas.getSelectedItem();
+//               // obtener las listas de personas correspondientes a la encuesta seleccionada.
+//               // ObtenerPersonasAEncuestar(cEncuesta);
+//                //ShowUserData(cEncuesta);
+//             }
+//        @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
         lbPersonas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                ArrayList<CEncuesta> arr= null;
                 CPersona persona = (CPersona) lbPersonas.getSelectedItem();
+                // Obtener la encusta
+                int eid = persona.getEncuestaId();
+                try
+                {
+                  arr = ObtenerEncuestas(eid);
+
+                     if (arr!= null)
+                     {
+                         CEncuesta e = arr.get(0);
+                         UserSession.T_ENCUESTA= e;
+                         btIniciarEncuesta.setEnabled(true);
+                     }
+                    else
+                     {
+                         Toast.makeText(EncuestaActivity.this,"Encuesta no obtenida",Toast.LENGTH_LONG).show();
+                     }
+
+                }
+                catch (Exception f)
+                {
+                    Toast.makeText(EncuestaActivity.this,"Error al obtener encuesa E(017)",Toast.LENGTH_LONG).show();
+                }
+
+
                 ShowUserData(persona);
             }
             @Override
@@ -77,11 +103,11 @@ public class EncuestaActivity extends ActionBarActivity {
         });
     }
 
-    private  void ObtenerPersonasAEncuestar(CEncuesta encuesta)
+    private  void ObtenerPersonasAEncuestar()
     {
         try
         {
-           ArrayList<CPersona> personas= EncuestaBE.ObtenerPersonasAEncuestar(encuesta,this);
+           ArrayList<CPersona> personas= EncuestaBE.ObtenerPersonasAEncuestar(this);
 
             if(personas!= null)
             {
@@ -102,7 +128,7 @@ public class EncuestaActivity extends ActionBarActivity {
         }
     }
 
-    private ArrayList<CEncuesta> ObtenerEncuestas () throws Exception
+    private ArrayList<CEncuesta> ObtenerEncuestas ( int idEncuesta ) throws Exception
     {
         ArrayList<CEncuesta> encuestas = new ArrayList<CEncuesta>();
         try
@@ -113,7 +139,7 @@ public class EncuestaActivity extends ActionBarActivity {
 
             DataBaseHandler handler = new DataBaseHandler(EncuestaActivity.this);
 
-            String q =" SELECT * FROM SAETA_ENCUESTAS ";
+            String q =" SELECT * FROM SAETA_ENCUESTAS where idencuesta=" + idEncuesta+";";
             Cursor c = handler.GetCursor(q);
 
             if (c!= null )
@@ -223,7 +249,8 @@ public class EncuestaActivity extends ActionBarActivity {
 
         tbApellidoPaterno.setText(e.getPaterno());
         tbApellidoMaterno.setText(e.getMaterno());
-        tbMunicipio.setText(e.getMunicipio());
+        tbMunicipio.setText(e.getCalle());
+        tbColonia.setText(e.getColonia());
         tbNombre.setText(e.getNombre());
         String [] telefonos =  new String[]{ e.getTelefono1(),e.getTelefono2(),e.getTelefono3()};
         ArrayAdapter<String> adapterTelefonos = new ArrayAdapter<String>(EncuestaActivity.this,android.R.layout.simple_spinner_item,telefonos);
@@ -232,6 +259,11 @@ public class EncuestaActivity extends ActionBarActivity {
 
     }
 
+
+    public  void LocatorClick(View v)
+    {
+        startActivity(new Intent("org.saeta.locator"));
+    }
     private void InitializeComponents()
     {
         try
@@ -240,24 +272,29 @@ public class EncuestaActivity extends ActionBarActivity {
             tbApellidoMaterno = (EditText) findViewById(R.id.TbApellidoMaterno);
             tbMunicipio = (EditText) findViewById(R.id.TbMunicipio);
             lbTelefonos = (Spinner) findViewById(R.id.LbTelefonos);
-            lbEncuestas = (Spinner) findViewById(R.id.LbEncuestas);
+           // lbEncuestas = (Spinner) findViewById(R.id.LbEncuestas);
             lbEncuestasPendientes = (TextView) findViewById(R.id.LbEncuestasPendientes);
             btIniciarEncuesta = (Button) findViewById(R.id.BtIniciarEncuesta);
             lbPersonas = (Spinner) findViewById(R.id.LbPersonas);
             tbNombre =(EditText) findViewById(R.id.TbNombre);
+            tbColonia = (EditText) findViewById(R.id.TbColonia);
 
-            ArrayList<CEncuesta> _encuestas= null;
+            ObtenerPersonasAEncuestar();
 
-            try
-            {
-                _encuestas= ObtenerEncuestas();
-            }
-            catch (Exception f)
-            {
-                Toast.makeText(EncuestaActivity.this, "Error al obtener encuestas (E009)",Toast.LENGTH_LONG).show();
-            }
+         //   ArrayList<CEncuesta> _encuestas= null;
 
-            MostrarListaEncuestas(_encuestas);
+//            try
+//            {
+//                _encuestas= ObtenerEncuestas();
+//            }
+//            catch (Exception f)
+//            {
+//                Toast.makeText(EncuestaActivity.this, "Error al obtener encuestas (E009)",Toast.LENGTH_LONG).show();
+//            }
+
+            //MostrarListaEncuestas(_encuestas);
+
+
 
          }
         catch (Exception d)
@@ -269,11 +306,11 @@ public class EncuestaActivity extends ActionBarActivity {
 
     public void  ClickIniciarEncuesta (View v)
     {
-        UserSession.T_ENCUESTA = null;
+       // UserSession.T_ENCUESTA = null;
         UserSession.T_PERSONA = null;
-        CEncuesta k = (CEncuesta)lbEncuestas.getSelectedItem();
+     //   CEncuesta k = (CEncuesta)lbEncuestas.getSelectedItem();
         CPersona p = (CPersona) lbPersonas.getSelectedItem();
-        UserSession.T_ENCUESTA=k;
+       // UserSession.T_ENCUESTA=k;
         UserSession.T_PERSONA =p;
         Intent intent = new Intent("org.saeta.IniciarEncuesta");
         startActivity(intent);
