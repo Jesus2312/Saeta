@@ -45,9 +45,10 @@ public class EncuestaStartActivity extends ActionBarActivity  {
     TextView lbNombrePersona;
     Button btNext;
     LinearLayout ly ;
-   // RecordAudioButton rcbutton;
+    RecordAudioButton rcbutton;
     Intent takeVideoIntent;
     VideoView videoView = null;
+    private String audioUrl ;
 
 
     @Override
@@ -59,12 +60,11 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         lbNombrePersona = (TextView) findViewById(R.id.LbNombrePersona);
         btNext= (Button) findViewById(R.id.BtSiguiente);
         ly = (LinearLayout) findViewById(R.id.ly2);
-       // rcbutton = new RecordAudioButton(this);
+         rcbutton = new RecordAudioButton(this);
        // ly.addView(rcbutton);
-
-
-    //    btBack = (Button) findViewById(R.id.BtAnterior);
+          //    btBack = (Button) findViewById(R.id.BtAnterior);
         MostrarEncusta();
+        rcbutton.performClick();
     }
 
     @Override
@@ -244,6 +244,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             mRecorder.release();
             mRecorder= null;
             isRecording = false;
+            encuesta.AudioUrl= audioUrl;
 
         }
         catch (Exception d)
@@ -294,18 +295,38 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         try {
 
             if (!isRecording) {
-                int currIndex = iterator.nextIndex() - 1;
-                String fname =  getFilesDir() +"/AU" + encuesta.IdEncuesta.toString() + "-" + encuesta.getPreguntas().get(currIndex).getIdPregunta() + ".3gp";
+             //   int currIndex = iterator.nextIndex() - 1;
+                final String fname =  getFilesDir() +"/AU" + encuesta.IdEncuesta.toString() + "_" + persona.getIdDetectado() + ".3gp";
                 mRecorder = new MediaRecorder();
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mRecorder.setMaxDuration(10000);
+                mRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+                    @Override
+                    public void onInfo(MediaRecorder mr, int what, int extra) {
+                        if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED)
+                        {
+                            rcbutton.setText("Grabacion detenida");
+                            rcbutton.setEnabled(false);
+                            mRecorder.stop();
+                            mRecorder.release();
+                            mRecorder= null;
+                            isRecording = false;
+                            //Guardar ruta del archivo
+                            encuesta.AudioUrl=fname;
+                            Toast.makeText(EncuestaStartActivity.this,"Grabacion alcanzo maximo de tiempo",Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
                 //FileOutputStream fs = openFileOutput(fname,Context.MODE_PRIVATE);
                 //FileDescriptor ds = fs.getFD();
+                audioUrl= fname;
                 mRecorder.setOutputFile(fname);
                 mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
                 // guardar la ruta del archivo
-                encuesta.getPreguntas().get(currIndex).AudioUrl =fname;
+             //   encuesta.getPreguntas().get(currIndex).AudioUrl =fname;
 
                 try {
                     mRecorder.prepare();
@@ -322,7 +343,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
             Toast.makeText(this, "Error al grabar audio " + d.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-    /*class  RecordAudioButton extends   Button{
+    class  RecordAudioButton extends   Button{
         boolean mStartRecording = true;
 
         public RecordAudioButton(Context context) {
@@ -348,6 +369,6 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         };
 
 
-    }*/
+    }
 
 }

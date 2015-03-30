@@ -7,6 +7,12 @@
     tools:context="org.saeta.activities.AppMenuActivity"
     android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:background="@drawable/cabezal" />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

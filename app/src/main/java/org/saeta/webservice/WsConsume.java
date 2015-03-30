@@ -8,9 +8,14 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
@@ -27,11 +32,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
 
 /**
  * Created by jlopez on 3/10/2015.
@@ -235,36 +245,6 @@ public class WsConsume {
     }
 
 
-//    public  String wsPostRequest(String data,String token)
-//    {
-//        String res ="";
-//        try
-//        {
-//            URL url=  new URL("http://api.saeta.org.mx/Auditoria");
-//            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-//            httpCon.setDoInput(true);
-//            httpCon.setDoOutput(true);
-//            String strCred = "Bearer "+ token;
-//            httpCon.setRequestProperty("Authorization",strCred);
-//            httpCon.setRequestMethod("POST");
-//            OutputStream os = httpCon.getOutputStream();
-//            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-//            osw.write(data);
-//            osw.flush();
-//            osw.close();
-//
-//            InputStream is = httpCon.getInputStream();
-//            String result=WsConsume.convertInputStreamToString(is);
-//            System.out.println(result);
-//        }
-//        catch (Exception e)
-//        {
-//
-//        }
-//        return  res;
-//    }
-//
-
     public String wsGetRequest(ArrayList<HttpParams> args)
     {
         String result ="";
@@ -315,6 +295,168 @@ public class WsConsume {
         }
         return  result;
     }
+
+
+    public String  makeHttpsGetCall (CEncuesta e) throws UnsupportedEncodingException {
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+        HttpPost httpPost = new HttpPost(this._url);
+        String x = "Bearer " + UserSession.TOKEN_KEY;
+        httpPost.setHeader("Authorization",x);
+        if (this.wsParameters.size()>0) {
+            httpPost.setEntity(new UrlEncodedFormEntity(this.wsParameters));
+        }
+
+        try
+        {
+            ArrayList<NameValuePair> l = FEncode(e);
+            httpPost.setEntity(new UrlEncodedFormEntity(l));
+            HttpResponse response = httpClient.execute(httpPost);
+            InputStream stream = response.getEntity().getContent();
+            String json = convertInputStreamToString(stream);
+            res= json;
+        }
+        catch (Exception ex){
+            res="0";
+        }
+        return  res;
+    }
+
+
+    public String  makeHttpsGetCall () throws UnsupportedEncodingException {
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+        HttpPost httpPost = new HttpPost(this._url);
+
+        if (this.wsParameters.size()>0) {
+            httpPost.setEntity(new UrlEncodedFormEntity(this.wsParameters));
+        }
+
+        try
+        {
+            HttpResponse response = httpClient.execute(httpPost);
+            InputStream stream = response.getEntity().getContent();
+            String json = convertInputStreamToString(stream);
+            res= json;
+        }
+        catch (Exception ex){
+            res="0";
+        }
+        return  res;
+    }
+
+    public String makeHttpsPostCallEncuesta (CEncuesta e) throws UnsupportedEncodingException {
+        String res = null;
+        ArrayList<NameValuePair> l = FEncode(e);
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+        try
+        {
+
+            URL url = new URL(this._url);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            // Setear los headers
+            String strCred ="Bearer " +UserSession.TOKEN_KEY;
+             con.setRequestProperty("Authorization",strCred);
+            InputStream stream =con.getInputStream();
+            String json = convertInputStreamToString(stream);
+            res= json;
+        }
+        catch (Exception ex){
+            res="0";
+        }
+        return  res;
+
+    }
+
+
+    public String makeHttpsPostCall () throws UnsupportedEncodingException {
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+       try
+        {
+
+            URL url = new URL(this._url);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+           // Setear los headers
+            String strCred ="Bearer " +UserSession.TOKEN_KEY;
+            con.setRequestProperty("Authorization",strCred);
+            InputStream stream =con.getInputStream();
+            String json = convertInputStreamToString(stream);
+            res= json;
+        }
+        catch (Exception ex){
+            res="0";
+        }
+        return  res;
+
+    }
+
+    public String makeHttpsGetCall(String urlp)
+    {
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+        try
+        {
+
+            URL url = new URL(urlp);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            // Setear los headers
+            String strCred ="Bearer " +UserSession.TOKEN_KEY;
+            con.setRequestProperty("Authorization",strCred);
+            InputStream stream =con.getInputStream();
+            String json = convertInputStreamToString(stream);
+            res= json;
+        }
+        catch (Exception ex){
+            res="0";
+        }
+        return  res;
+
+    }
+
 
     public static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));

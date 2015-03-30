@@ -15,6 +15,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Debug;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -31,13 +32,19 @@ import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
+import org.saeta.entities.GPSTracker;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FinalEncuestaActivity extends ActionBarActivity {
 
     static  final int REQUEST_VIDEO_CAPTURE =1;
+    static  final  int REQUEST_PHOTO_CAPTURE =2;
     Intent takeVideoIntent;
+    Intent takePictureIntent;
     VideoView videoView = null;
     private MediaRecorder mRecorder = null;
     private boolean isRecording= false;
@@ -56,7 +63,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         GetData();
         masterL= (LinearLayout) findViewById(R.id.MasterL);
         recordAudioButton = new RecordAudioButton(this);
-        masterL.addView(recordAudioButton,4);
+      //  masterL.addView(recordAudioButton,4);
     }
 
     private void GetData ()
@@ -96,28 +103,30 @@ public class FinalEncuestaActivity extends ActionBarActivity {
     private void GetDialog ()
     {
 
-        if (encuestaAGrabar.VideoUrl.equals("")&& encuestaAGrabar.AudioUrl.equals("")) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Finalizar Encuesta")
-                    .setMessage("Desea guardar esta en cuesta sin fotografia/audio/video?")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//        if (encuestaAGrabar.VideoUrl.equals("")&& encuestaAGrabar.AudioUrl.equals("")) {
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Finalizar Encuesta")
+//                    .setMessage("Desea guardar esta en cuesta sin fotografia/audio/video?")
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//
+//                        public void onClick(DialogInterface dialog, int whichButton) {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
+        new asyncSaveEncuetsta(encuestaAGrabar,personaEncuestada).execute();
+           //  SaveEncuesta(encuestaAGrabar,personaEncuestada);
+                           // new asyncSaveEncuetsta(encuestaAGrabar, personaEncuestada).execute();
 
-                            new asyncSaveEncuetsta(encuestaAGrabar, personaEncuestada).execute();
-
-                            // finish();
+             //finish();
                             //Toast.makeText(FinalEncuestaActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
-
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null).show();
-        }
-        else
-        {
-            new asyncSaveEncuetsta(encuestaAGrabar,personaEncuestada).execute();
-        }
+//
+//                        }
+//                    })
+//                    .setNegativeButton(android.R.string.no, null).show();
+//        }
+//        else
+//        {
+//            new asyncSaveEncuetsta(encuestaAGrabar,personaEncuestada).execute();
+//        }
     }
 
 
@@ -126,7 +135,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         int i=0;
         try
         {
-             ////   Debug.waitForDebugger();
+          //  //Debug.waitForDebugger();
             String r=e.GuardarRespuestas(this,p);
             if (r.equals("1"))
             {
@@ -172,11 +181,57 @@ public class FinalEncuestaActivity extends ActionBarActivity {
     }
 
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        encuestaAGrabar.PhotoUrl= image.getAbsolutePath();
+        return image;
+    }
+
+    public  void capturarFoto(View v )
+    {
+        takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+         if(takePictureIntent.resolveActivity(getPackageManager())!=null) {
+             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                 // Create the File where the photo should go
+                 File photoFile = null;
+                 try {
+                     photoFile = createImageFile();
+                 } catch (IOException ex) {
+                     // Error occurred while creating the File
+
+                 }
+                 // Continue only if the File was successfully created
+                 if (photoFile != null) {
+                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                             Uri.fromFile(photoFile));
+                     startActivityForResult(takePictureIntent, REQUEST_PHOTO_CAPTURE);
+                 }
+
+                 // startActivityForResult(takeVideoIntent, REQUEST_PHOTO_CAPTURE);
+             }
+         }
+
+    }
+
     public void capturarVideo (View v)
     {
         takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        takeVideoIntent.putExtra("android.intent.extra.durationLimit", 10);
+        takeVideoIntent.putExtra("EXTRA_VIDEO_QUALITY",0);
         if(takeVideoIntent.resolveActivity(getPackageManager())!=null)
         {
+
             startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
         }
     }
@@ -210,6 +265,26 @@ public class FinalEncuestaActivity extends ActionBarActivity {
             videoView.setVideoURI(videoUri);
             videoView.start();
         }
+//        else if (requestCode ==REQUEST_PHOTO_CAPTURE && resultCode ==RESULT_OK)
+//        {
+//            Uri videoUri = data.getData();
+//            String absolutePath ="";
+//            try
+//            {
+//                String [] proj = {MediaStore.Video.Media.DATA};
+//                Cursor cursor =  this.getContentResolver().query(videoUri,proj,null,null,null);
+//                int  colIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+//                cursor.moveToFirst();
+//                absolutePath = cursor.getString(colIndex);
+//
+//            }
+//            catch (Exception d)
+//            {
+//                Toast.makeText(this, "Error al capturar video E(017)",Toast.LENGTH_LONG).show();
+//                absolutePath =null;
+//            }
+//            encuestaAGrabar.PhotoUrl =absolutePath;
+//        }
     }
     public void StartRecording () {
         try {
@@ -244,7 +319,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
             Toast.makeText(this, "Error al grabar audio " + d.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-    class  RecordAudioButton extends Button {
+    private class  RecordAudioButton extends Button {
         boolean mStartRecording = true;
 
         public RecordAudioButton(Context context) {
@@ -273,15 +348,19 @@ public class FinalEncuestaActivity extends ActionBarActivity {
     }
 
 
-    class  asyncSaveEncuetsta extends AsyncTask<String,String,String> implements LocationListener
+    class  asyncSaveEncuetsta extends AsyncTask<String,String,String>
     {
+
+        Location location; // location
+        double latitude; // latitude
+        double longitude; // longitude
 
         private LocationManager locationManager;
         private String provider;
         private CEncuesta _e;
         private CPersona _p;
-        float lat ;
-        float lon;
+        double lat ;
+        double lon;
         int saveResult;
         public  asyncSaveEncuetsta(CEncuesta encuesta,CPersona persona)
         {
@@ -303,13 +382,14 @@ public class FinalEncuestaActivity extends ActionBarActivity {
                 dialog.setIndeterminate(false);
                 dialog.setCancelable(false);
                 dialog.show();
-                Location location = locationManager.getLastKnownLocation(provider);
-                 lat = (float)location.getLatitude();
-                 lon = (float) location.getLongitude();
+                GPSTracker tracker = new GPSTracker(FinalEncuestaActivity.this);
+                lat= tracker.getLatitude();
+                lon= tracker.getLongitude();
+
             }
             catch (Exception f)
             {
-                System.out.println(f.getMessage());
+
             }
 
         }
@@ -318,10 +398,10 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
            // Setear las coordenadas .
-
+             //Debug.waitForDebugger();
             int f ;
-             _e.Latitud =  Float.toString(lat);
-             _e.Longitud = Float.toString(lon);
+             _e.Latitud =  Double.toString(lat);
+             _e.Longitud = Double.toString(lon);
              saveResult= SaveEncuesta(_e,_p);
              return  null;
         }
@@ -337,25 +417,9 @@ public class FinalEncuestaActivity extends ActionBarActivity {
             finish();
         }
 
-        @Override
-        public void onLocationChanged(Location location) {
 
-        }
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
 
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
     }
 
 

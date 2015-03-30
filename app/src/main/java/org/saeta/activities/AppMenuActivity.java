@@ -78,21 +78,23 @@ public class AppMenuActivity extends ActionBarActivity {
         String msg= "";
         try
         {
-             Debug.waitForDebugger();
+             //Debug.waitForDebugger();
              //Descargar catalogo de persnas por encuestas.
             String ub = CUrls.CATALOGO_PERSONAS_URL;
             for (CEncuesta e : encuestas)
             {
                CPersona [] temp  ;
               String url = CUrls.CATALOGO_PERSONAS_URL + e.getIdEncuesta();
-              URL uri = new URL(url);
-              String token = UserSession.TOKEN_KEY;
-              HttpURLConnection con = (HttpURLConnection) uri.openConnection();
-              String strCred = "Bearer "+ token;
-              con.setRequestProperty("Authorization",strCred);
-              InputStream s = con.getInputStream();
-              String result=WsConsume.convertInputStreamToString(s);
-              Gson gson = new GsonBuilder().create();
+            //  URL uri = new URL(url);
+              WsConsume consume = new WsConsume();
+             String result=  consume.makeHttpsGetCall(url);
+//              String token = UserSession.TOKEN_KEY;
+//              HttpURLConnection con = (HttpURLConnection) uri.openConnection();
+//              String strCred = "Bearer "+ token;
+//              con.setRequestProperty("Authorization",strCred);
+//              InputStream s = con.getInputStream();
+//              String result=WsConsume.convertInputStreamToString(s);
+            Gson gson = new GsonBuilder().create();
               temp = gson.fromJson(result,CPersona[].class);
               for (CPersona  p : temp)
               {
@@ -121,22 +123,24 @@ public class AppMenuActivity extends ActionBarActivity {
     {
 
         String msg="";
-        Debug.waitForDebugger();
+         //Debug.waitForDebugger();
         CEncuesta[] encuestas;
         String result;
         HttpURLConnection connection =null;
         try
         {
-            String uri="http://api.saeta.org.mx/Auditoria";
-            URL url = new URL(uri);
-            String token = UserSession.TOKEN_KEY;
-            connection = (HttpURLConnection)url.openConnection();
-            String strCred ="Bearer " +token;
-            connection.setRequestProperty("Authorization",strCred);
-            InputStream s = connection.getInputStream();
-            result = WsConsume.convertInputStreamToString(s);
+            WsConsume consume = new WsConsume("https://api.saeta.org.mx/Auditoria");
+            String res = consume.makeHttpsPostCall();
+//            String uri="http://api.saeta.org.mx/Auditoria";
+//            URL url = new URL(uri);
+//            String token = UserSession.TOKEN_KEY;
+//            connection = (HttpURLConnection)url.openConnection();
+//            String strCred ="Bearer " +token;
+//            connection.setRequestProperty("Authorization",strCred);
+//            InputStream s = connection.getInputStream();
+           // result = WsConsume.convertInputStreamToString(s);
             Gson gson = new GsonBuilder().create();
-            encuestas = gson.fromJson(result,CEncuesta[].class);
+            encuestas = gson.fromJson(res,CEncuesta[].class);
             msg="1";
 
             try
@@ -208,9 +212,10 @@ public class AppMenuActivity extends ActionBarActivity {
     private String PostRespuestas ()
     {
        //Debug.waitForDebugger();
-        String r= EncuestaBE.SubirEncuestas(AppMenuActivity.this);
+        EncuestaBE.FilesDir = getFilesDir();
+        String r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
         return  r;
-    }
+     }
 
     private void GuardarCatalogoPersonas (ArrayList<CPersona> personas)
     {
@@ -228,7 +233,7 @@ public class AppMenuActivity extends ActionBarActivity {
                     String queryInsert = " INSERT INTO SAETA_PERSONAS VALUES ('" + s.getCalle() + "','" + s.getCodigoPostal() + "','" + s.getColonia() + "', " +
                             s.getDistritoFederal() + "," + s.getDistritoLocal() + ",'" + s.getEstado() + "'," + s.getIdDetectado() + " ,'" + s.getLatitud() + "','" + s.getLongitud() + "','" +
                             s.getManzana() + "','" + s.getMaterno() + "','" + s.getMunicipio() + "','" + s.getNombre() + "','" + s.getNumExterior() + "','" + s.getNumInterior() + "','" + s.getPaterno() + "','" +
-                            s.getSeccion() + "','" + s.getTelefono1() + "','" + s.getTelefono2() + "','" + s.getTelefono3() + "' ," + s.getEncuestaId() + ");";
+                            s.getSeccion() + "','" + s.getTelefono1() + "','" + s.getTelefono2() + "','" + s.getTelefono3() + "' ," + s.getEncuestaId() + ","+0+");";
 
                     handler.ExecuteQuery(queryInsert);
                 //}

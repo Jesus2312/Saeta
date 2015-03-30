@@ -5,5 +5,5 @@ package org.saeta.bussiness;
  */
 public class CUrls {
 
-    public final static String CATALOGO_PERSONAS_URL ="http://api.saeta.org.mx/persona/";
+    public final static String CATALOGO_PERSONAS_URL ="https://api.saeta.org.mx/persona/";
 }

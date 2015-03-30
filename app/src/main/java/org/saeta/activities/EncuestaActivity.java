@@ -203,7 +203,7 @@ public class EncuestaActivity extends ActionBarActivity {
                 }// while encuestas
             }
             // Imprimir el numero de encuestas disponibles .
-            lbEncuestasPendientes.setText("Encuestas pendientes: "+ encuestas.size());
+          //  lbEncuestasPendientes.setText("Encuestas pendientes: "+ encuestas.size());
             if (encuestas.size()<= 0 )
             {
                 btIniciarEncuesta.setEnabled(false);
@@ -260,8 +260,17 @@ public class EncuestaActivity extends ActionBarActivity {
     }
 
 
+
     public  void LocatorClick(View v)
     {
+        // Set lat lon
+
+        CPersona p = (CPersona) lbPersonas.getSelectedItem();
+        LocatorActivity.lat = String.valueOf(p.getLatitud());
+        LocatorActivity.lon = String.valueOf(p.getLongitud());
+        LocatorActivity.PersonaId= p.getIdDetectado();
+        LocatorActivity.nombrePersona = p.getNombre() +" "+ p.getPaterno() +" "+ p.getMaterno();
+        LocatorActivity.domicilioPersona = p.getCalle()+ "# "+p.getNumInterior()  + "Colonia: "+ p.getColonia();
         startActivity(new Intent("org.saeta.locator"));
     }
     private void InitializeComponents()

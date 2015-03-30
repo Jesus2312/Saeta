@@ -16,6 +16,12 @@
             tools:context="org.saeta.activities.EncuestaActivity">
 
 
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView3"
+                android:background="@drawable/cabezal" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,6 +135,21 @@
                 android:text="Localizar"
                 android:id="@+id/btLocator"
                 android:onClick="LocatorClick" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="DOMICILIO NO ENCONTRADO"
+                android:id="@+id/BtDomicilioNoEncontrado"
+                 />
+
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="NO CONTESTO"
+                android:id="@+id/BtNoConesto"
+                />
 
 
         </LinearLayout>

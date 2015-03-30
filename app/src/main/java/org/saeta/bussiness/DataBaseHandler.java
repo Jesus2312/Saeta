@@ -78,7 +78,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "VIDEO_DATA BLOB" +
                 ");";
         String str6= " CREATE TABLE SAETA_PERSONAS ( "+
-                  " CALLE TEXT, " +
+                  "    CALLE TEXT, " +
                    "CODIGO_POSTAL TEXT," +
                 " COLONIA TEXT, " +
                 "DISTRITO_FEDERAL INTEGER," +
@@ -97,7 +97,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 " SECCION TEXT, " +
                 " TELEFONO_1 TEXT, " +
                 " TELEFONO_2 TEXT, " +
-                " TELEFONO_3 TEXT, IDENCUESTA NUMBER );";
+                " TELEFONO_3 TEXT, " +
+                " IDENCUESTA NUMBER," +
+                " ENCUESTA_STATUS DEFAULT 0 );";
 
         String ct7 =" CREATE TABLE USER_LOGIN (" +
                 "TOKEN TEXT, " +
@@ -105,6 +107,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "PASSWORD TEXT " +
                 " );";
 
+        String ct8  =" CREATE TABLE PERSONA_MAPAS ("+
+                " ID_PERSONA TEXT," +
+                " MAP_URL TEXT );";
 
         try
         {
@@ -115,6 +120,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
              db.execSQL(str5);
              db.execSQL(str6);
              db.execSQL(ct7);
+            db.execSQL(ct8);
         }
         catch (Exception f)
         {

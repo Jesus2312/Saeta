@@ -8,6 +8,12 @@
     tools:context="org.saeta.activities.FinalEncuestaActivity"
     android:id="@+id/MasterL">
 
+    <ImageButton
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:background="@drawable/cabezal" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +35,8 @@
         android:layout_height="wrap_content"
         android:text="Tomar Fotografia"
         android:id="@+id/button7"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="capturarFoto" />
 
     <Button
         android:layout_width="fill_parent"

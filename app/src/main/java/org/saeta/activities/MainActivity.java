@@ -28,6 +28,7 @@ import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
+import org.saeta.webservice.RestUtil;
 import org.saeta.webservice.WsConsume;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
         }
         else
         {
-            // Debug.waitForDebugger();
+            // //Debug.waitForDebugger();
 
             if (nf ==null)
             {
@@ -132,6 +133,22 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void TestHttps ()
+    {
+        //Debug.waitForDebugger();
+        WsConsume consume = new WsConsume();
+        try{
+            consume.makeHttpsGetCall();
+        }
+        catch (Exception e )
+        {
+
+        }
+
+
+    }
+
     public String  AuthenticateUser(String user, String pass)
     {
         String opResult= null;
@@ -139,10 +156,9 @@ public class MainActivity extends ActionBarActivity {
         {
 
 
-
+            //  TestHttps();
             //Debug.waitForDebugger();
-            WsConsume consumer =new WsConsume("http://api.saeta.org.mx/Token");
-
+            WsConsume consumer =new WsConsume("https://api.saeta.org.mx/Token");
             ArrayList<NameValuePair> param = new ArrayList<NameValuePair>();
             param.add(new BasicNameValuePair("grant_type","password"));
             param.add(new BasicNameValuePair("username",user));
@@ -150,10 +166,11 @@ public class MainActivity extends ActionBarActivity {
 
             consumer.setParameters(param);
 
-            String jsonResult=consumer.getPostWsResponse();
+            //String jsonResult=consumer.getPostWsResponse();
+                     // cambiado a HTTPS
+            String jsonResult = consumer.makeHttpsGetCall();
 
             JSONObject jsonLogin=  new JSONObject(jsonResult);
-
             String token = jsonLogin.getString("access_token");
             String fullName = jsonLogin.getString("fullName");
             String tokenType =jsonLogin.getString("token_type");
