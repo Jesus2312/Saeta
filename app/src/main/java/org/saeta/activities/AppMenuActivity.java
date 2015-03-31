@@ -211,6 +211,7 @@ public class AppMenuActivity extends ActionBarActivity {
 
     private String PostRespuestas ()
     {
+        //cagado
        //Debug.waitForDebugger();
         EncuestaBE.FilesDir = getFilesDir();
         String r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
