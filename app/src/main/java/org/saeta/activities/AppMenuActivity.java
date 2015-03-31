@@ -2,10 +2,8 @@ package org.saeta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,15 +16,12 @@ import com.google.gson.GsonBuilder;
 import org.saeta.bussiness.CUrls;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.EncuestaBE;
-import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
 import org.saeta.webservice.WsConsume;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class AppMenuActivity extends ActionBarActivity {
@@ -78,7 +73,7 @@ public class AppMenuActivity extends ActionBarActivity {
         String msg= "";
         try
         {
-             //Debug.waitForDebugger();
+             //////Debug.waitForDebugger();
              //Descargar catalogo de persnas por encuestas.
             String ub = CUrls.CATALOGO_PERSONAS_URL;
             for (CEncuesta e : encuestas)
@@ -123,7 +118,7 @@ public class AppMenuActivity extends ActionBarActivity {
     {
 
         String msg="";
-         //Debug.waitForDebugger();
+       ////Debug.waitForDebugger();
         CEncuesta[] encuestas;
         String result;
         HttpURLConnection connection =null;
@@ -212,7 +207,7 @@ public class AppMenuActivity extends ActionBarActivity {
     private String PostRespuestas ()
     {
         //cagado
-       //Debug.waitForDebugger();
+       ////Debug.waitForDebugger();
         EncuestaBE.FilesDir = getFilesDir();
         String r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
         return  r;
@@ -222,6 +217,7 @@ public class AppMenuActivity extends ActionBarActivity {
     {
         try
         {
+            //Debug.waitForDebugger();
             DataBaseHandler handler = new DataBaseHandler(this);
 
             String deleteQuery =" DELETE FROM SAETA_PERSONAS;";
@@ -272,6 +268,7 @@ public class AppMenuActivity extends ActionBarActivity {
         }
         @Override
         protected String doInBackground(String... params) {
+            //Debug.waitForDebugger();
             switch (_action)
             {
                 case  0:

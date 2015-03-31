@@ -6,15 +6,11 @@ import android.database.Cursor;
 
 import com.google.gson.annotations.Expose;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.UserSession;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -57,6 +53,17 @@ public class CEncuesta {
     public String PhotoUrl = "";
     public String Latitud = "";
     public String Longitud = "";
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int status) {
+        Status = status;
+    }
+
+    public int Status ;
+
 
     public ArrayList<CPregunta> getPreguntas() {
         return Preguntas;

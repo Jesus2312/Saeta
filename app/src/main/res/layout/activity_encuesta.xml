@@ -139,16 +139,18 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="DOMICILIO NO ENCONTRADO"
+                android:text="Domicilio no encontrado"
                 android:id="@+id/BtDomicilioNoEncontrado"
+                android:onClick="DomicilioNoEncontradoClick"
                  />
 
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="NO CONTESTO"
+                android:text="No Contesto"
                 android:id="@+id/BtNoConesto"
+                android:onClick="PersonaNoContestaClick"
                 />
 
 

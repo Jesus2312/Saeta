@@ -7,37 +7,28 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
-import org.saeta.entities.CPersona;
 import org.saeta.entities.CPregunta;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -191,12 +182,17 @@ public class WsConsume {
         ArrayList<NameValuePair> l = new ArrayList<NameValuePair>();
         try
         {
-            l.add(new BasicNameValuePair("Encuesta",f.Encuesta));
-            l.add( new BasicNameValuePair("IdDetectado",f.IdDetectado));
             l.add( new BasicNameValuePair("IdEncuesta",f.IdEncuesta));
+            l.add(new BasicNameValuePair("Encuesta",f.Encuesta));
             l.add( new BasicNameValuePair("IdProceso",f.IdProceso));
+            l.add( new BasicNameValuePair("IdDetectado",f.IdDetectado));
+            l.add( new BasicNameValuePair("Municipio",f.Municipio));
+            l.add( new BasicNameValuePair("Paterno",f.Paterno));
             l.add( new BasicNameValuePair("Materno",f.Materno));
             l.add( new BasicNameValuePair("Nombre",f.Nombre));
+            l.add( new BasicNameValuePair("Telefono1",f.Telefono1));
+            l.add( new BasicNameValuePair("Telefono2",f.Telefono2));
+            l.add( new BasicNameValuePair("Telefono3",f.Telefono3));
 
             int idx = 0;
             for(CPregunta p : f.Preguntas)
@@ -207,10 +203,13 @@ public class WsConsume {
                 l.add(new BasicNameValuePair("Preguntas["+idx+"][MultiRespuesta]",String.valueOf(p.MultiRespuesta)));
                 l.add(new BasicNameValuePair("Preguntas["+idx+"][Seleccionado]",String.valueOf(p.Seleccionado)));
                 l.add(new BasicNameValuePair("Preguntas["+idx+"][Respuestas]",""));
-                l.add(new BasicNameValuePair("Preguntas["+idx+"][Checked]",String.valueOf(p.Seleccionado)));
+                l.add(new BasicNameValuePair("Preguntas["+idx+"][koChecked]",String.valueOf(p.Seleccionado)));
                 idx+=1;
             }
-
+            l.add( new BasicNameValuePair("LatitudAuditoria",f.Latitud));
+            l.add( new BasicNameValuePair("LongitudAuditoria",f.Longitud));
+            l.add( new BasicNameValuePair("EstatusAuditoria","1")); // en este punto todas las auditorias son correctas
+            l.add( new BasicNameValuePair("koEstatusAuditoria","1"));
 
         }
         catch (Exception n)
@@ -319,6 +318,39 @@ public class WsConsume {
         {
             ArrayList<NameValuePair> l = FEncode(e);
             httpPost.setEntity(new UrlEncodedFormEntity(l));
+            HttpResponse response = httpClient.execute(httpPost);
+            InputStream stream = response.getEntity().getContent();
+            String json = convertInputStreamToString(stream);
+            res= json;
+        }
+        catch (Exception ex){
+            res="0";
+        }
+        return  res;
+    }
+
+    public String  doHttpsGetCall (CEncuesta e) throws UnsupportedEncodingException {
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+        HttpPost httpPost = new HttpPost(this._url);
+        String x = "Bearer " + UserSession.TOKEN_KEY;
+        httpPost.setHeader("Authorization",x);
+        if (this.wsParameters.size()>0) {
+            httpPost.setEntity(new UrlEncodedFormEntity(this.wsParameters));
+        }
+
+        try
+        {
+           // ArrayList<NameValuePair> l = FEncode(e);
+           // httpPost.setEntity(new UrlEncodedFormEntity(l));
             HttpResponse response = httpClient.execute(httpPost);
             InputStream stream = response.getEntity().getContent();
             String json = convertInputStreamToString(stream);

@@ -23,7 +23,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
 
         // create table encuestas
-
+        //Debug.waitForDebugger();
         String str1 ="CREATE TABLE SAETA_ENCUESTAS (" +
                 " IdEncuesta INTEGER, " +
                 " Encuesta TEXT, " +
@@ -107,6 +107,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "PASSWORD TEXT " +
                 " );";
 
+        String ct9 = "CREATE TABLE ENCUESTAS_CANCELADAS (" +
+                " ID_DETECTADO INTEGER, " +
+                " IDENCUESTA  INTEGER , " +
+                " LATITUD TEXT, " +
+                " LONGITUD TEXT " +
+                ");";
+
+
         String ct8  =" CREATE TABLE PERSONA_MAPAS ("+
                 " ID_PERSONA TEXT," +
                 " MAP_URL TEXT );";
@@ -120,7 +128,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
              db.execSQL(str5);
              db.execSQL(str6);
              db.execSQL(ct7);
-            db.execSQL(ct8);
+             db.execSQL(ct8);
+             db.execSQL(ct9);
         }
         catch (Exception f)
         {

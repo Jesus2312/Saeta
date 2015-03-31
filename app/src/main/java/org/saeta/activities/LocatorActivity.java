@@ -1,15 +1,12 @@
 package org.saeta.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,15 +15,10 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.client.utils.URIUtils;
-import org.saeta.activities.R;
 import org.saeta.bussiness.DataBaseHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class LocatorActivity extends Activity {
 
@@ -49,6 +41,8 @@ public class LocatorActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locator);
         InitializeBrowser();
+        OpenImage();
+
     }
 
 
@@ -109,31 +103,17 @@ public class LocatorActivity extends Activity {
     }
 
 
-    public void OpenImage (View v)
+    public void OpenImage ()
     {
         try
         {
             String filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
             File fImage = new File( filename);
-
-            if (!fImage.exists())
+            if (fImage.exists())
             {
-                Toast.makeText(LocatorActivity.this, "No ha descargado un mapa aun para esta persona.",Toast.LENGTH_LONG).show();
-                return;
+                String url = "file:/"+ filename;
+                webView.loadUrl(url);
             }
-            else
-            {
-                Uri uri = Uri.parse("file:/"+filename);
-
-                Intent i = new Intent();
-                i.setAction(Intent.ACTION_VIEW);
-                i.setDataAndType(uri,"image/*");
-                startActivity(i);
-                //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("file:/" + filename))); /** replace with your own uri */
-                //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/external/images/media/16"))); /** replace with your own uri */
-
-            }
-
         }
         catch (Exception d ) {
             Toast.makeText(LocatorActivity.this,"Error al abrir imagen", Toast.LENGTH_LONG).show();

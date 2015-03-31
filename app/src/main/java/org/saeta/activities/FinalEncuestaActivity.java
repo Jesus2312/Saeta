@@ -135,7 +135,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         int i=0;
         try
         {
-          //  //Debug.waitForDebugger();
+          //  ////Debug.waitForDebugger();
             String r=e.GuardarRespuestas(this,p);
             if (r.equals("1"))
             {
@@ -398,7 +398,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
            // Setear las coordenadas .
-             //Debug.waitForDebugger();
+             ////Debug.waitForDebugger();
             int f ;
              _e.Latitud =  Double.toString(lat);
              _e.Longitud = Double.toString(lon);

@@ -41,7 +41,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/LblDomicilio" />
 
-    <Button
+    Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Abrir Mapa"

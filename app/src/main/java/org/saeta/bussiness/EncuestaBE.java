@@ -1,19 +1,20 @@
 package org.saeta.bussiness;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
+import org.saeta.entities.GpsHandler;
+import org.saeta.entities.SaetaLocation;
 import org.saeta.webservice.WsConsume;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
@@ -23,6 +24,28 @@ import it.sauronsoftware.ftp4j.FTPDataTransferListener;
  */
 public class EncuestaBE {
     public  static File FilesDir;
+
+
+    public static  String CancelarEncuesta (CPersona p , int status ,Context context)
+    {
+        String gr= null;
+        GpsHandler gpsHandler = new GpsHandler(context);
+        double lat = gpsHandler.getLatitude();
+        double lon = gpsHandler.getLongitude();
+        String res = new EncustaDAL(context).CancelarEncuesta(p,status);
+        String res1= new EncustaDAL(context).guardarCancelLocacion(p.getIdDetectado(),p.getEncuestaId(),lat,lon);
+
+        if (res.equals("1" )&& res1.equals("1"))
+        {
+            gr="1";
+        }
+        else
+        {
+            gr="0";
+
+        }
+        return  gr;
+    }
 
     public static ArrayList<CPersona> ObtenerPersonasAEncuestar(Context c ) throws Exception
     {
@@ -77,92 +100,89 @@ public class EncuestaBE {
 return  res;
     }
 
+
+
+    private String SubirEncuestasCanceladas (Context context)
+    {
+        String r= null;
+        try
+        {
+            ArrayList<CPersona> cPersonasCanceladas = new EncustaDAL().ObtenerPersonasCanceladas(context);
+            ArrayList<CEncuesta> encuestasCanceladas = new ArrayList<CEncuesta>();
+
+            for(CPersona p : cPersonasCanceladas)
+            {
+               // Obterner coordenadas
+               SaetaLocation loc = new EncustaDAL(context).getCancelLocation(p.getIdDetectado());
+               CEncuesta encuesta = new CEncuesta();
+               encuesta=  new EncustaDAL().GetEncuestaPorPersonaCancelada(p, context);
+                encuesta.IdDetectado = String.valueOf(p.getIdDetectado());
+               encuesta.Latitud = loc.getLatitud();
+               encuesta.Longitud = loc.getLongitud();
+               encuesta.Status =2;  // default traerlo del obtener personas canceladas
+               encuestasCanceladas.add(encuesta);
+            }
+
+
+            for (CEncuesta i : encuestasCanceladas)
+            {
+                ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("IdEncuesta",i.getIdEncuesta()));
+                params.add(new BasicNameValuePair("Encuesta",i.Encuesta));
+                params.add(new BasicNameValuePair("IdProceso", i.IdProceso));
+                params.add(new BasicNameValuePair("IdDetectado", i.IdDetectado));
+                params.add( new BasicNameValuePair("Municipio", i.Municipio));
+                params.add(new BasicNameValuePair("Paterno",i.Paterno));
+                params.add(new BasicNameValuePair("Materno", i.Materno));
+                params.add(new BasicNameValuePair("Nombre", i.Nombre));
+                params.add(new BasicNameValuePair("Telefono1", i.Telefono1));
+                params.add(new BasicNameValuePair("Telefono2",i.Telefono2));
+                params.add(new BasicNameValuePair("Telefono3", i.Telefono3));
+                params.add(new BasicNameValuePair("Preguntas",""));
+                params.add(new BasicNameValuePair("LatitudAuditoria", i.Latitud));
+                params.add(new BasicNameValuePair("LongitudAuditoria", i.Longitud));
+                params.add(new BasicNameValuePair("EstatusAuditoria", String.valueOf(i.Status)));
+                params.add(new BasicNameValuePair("koEstatusAuditoria",String.valueOf(i.Status)));
+
+                WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
+                consume.setParameters(params);
+                consume.doHttpsGetCall(i);
+            }
+
+            return  "1";
+        }
+        catch (Exception d )
+        {
+            r="0";
+        }
+     return  r;
+    }
+
+
     public  String SubirEncuestas (Context context)
     {
 
         String result="";
         try {
 
+            // Subir Encuestas canceladas
+
+            SubirEncuestasCanceladas(context);
+
+
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // excluye los campos que solo se uan en ambito de la app
             ArrayList<CEncuesta> encuestas = new EncustaDAL(context).ObtenerEncuestasRealizadas();
             ArrayList<String> jsonArray = new ArrayList<String>();
 
-            for (CEncuesta e : encuestas) {
+            if (encuestas!= null) {
+                for (CEncuesta e : encuestas) {
 
-                String encuestasJson = gson.toJson(e);
-                jsonArray.add(encuestasJson);
-                WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
-                consume.makeHttpsGetCall(e);
+                    String encuestasJson = gson.toJson(e);
+                    jsonArray.add(encuestasJson);
+                    WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
+                    consume.makeHttpsGetCall(e);
 
-                //  consume.wsPostRequest(UserSession.TOKEN_KEY,e);
-
-                // Obtener los archivos guardados de la base
-
-//
-//                DataBaseHandler h = new DataBaseHandler(context);
-//                Cursor cr;
-//
-//                cr = h.GetCursor(" select photo_data, audio_data,video_data from encuesta_media " +
-//                        "where idencuesta ="+e.IdEncuesta+" and id_detectado ="+ e.IdDetectado+";");
-//
-//                byte[] audio = null;
-//                byte[] video = null;
-//                byte[] photo = null;
-//
-//                if (cr.moveToFirst())
-//                {
-//                    String  ffoto = cr.getString(0).toString();
-//                    String faudio = cr.getString(1).toString();
-//                    String fvideo  = cr.getString(2).toString();
-//
-//
-//                    // subir audio
-//                    if (faudio!= null) {
-////                        FileOutputStream fileOuputStream =
-////                                new FileOutputStream(FilesDir + "/AUDIO_ENCUESTA_" + e.IdEncuesta + "_" + e.IdDetectado + ".3gp");
-////                        fileOuputStream.write(audio);
-////                        fileOuputStream.close();
-//
-//                        File f = new File(faudio);
-//
-//                        UploadFtpFiles(f);
-//                    }
-//
-//                    if (fvideo!= null) {
-//                        // subir video
-////                        FileOutputStream fileOuputStream2 =
-////                                new FileOutputStream(FilesDir + "/VIDEO_ENCUESTA_" + e.IdEncuesta + "_" + e.IdDetectado + ".mp4");
-////                        fileOuputStream2.write(video);
-////                        fileOuputStream2.close();
-//
-//                       File videol = new File(fvideo);
-//
-//                        UploadFtpFiles(videol);
-//                    }
-//
-//                    // subir foto
-//                    if(ffoto != null) {
-//
-//                        File fphotol = new File(ffoto);
-//
-//                                           UploadFtpFiles(fphotol);
-//                    }
-//
-//                }
-//               // cr.close();
-//
-//
-//
-//
-//
-//            }
-//            result="1";
-//        }
-//        catch (Exception x)
-//        {
-//            result = "Error al subir encuestas (E020) detalles: "+x.getMessage();
-//        }
-//        return  result;
+                }
             }
             result= "1";
         }

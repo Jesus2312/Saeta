@@ -1,5 +1,7 @@
 package org.saeta.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.EncuestaBE;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
+import org.saeta.entities.AudiotiraStatus;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
 import org.saeta.entities.CPregunta;
@@ -228,6 +231,79 @@ public class EncuestaActivity extends ActionBarActivity {
 
         return true;
     }
+
+    public  void PersonaNoContestaClick(View v)
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Persona no contesta.")
+                .setMessage("Desea omitir esta encuesta?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        CPersona persona = (CPersona) lbPersonas.getSelectedItem();
+
+                        if (persona != null) {
+                            String r = EncuestaBE.CancelarEncuesta(persona, AudiotiraStatus.NO_CONTESTO,EncuestaActivity.this);
+                            if (r.equals("1"))
+                            {
+                                ObtenerPersonasAEncuestar();
+                                Toast.makeText(EncuestaActivity.this,"Encuesta modificada correctamente",Toast.LENGTH_LONG).show();
+                            }else
+                            {
+                                Toast.makeText(EncuestaActivity.this,"Ocurrio un error al modificar la encuesta.",Toast.LENGTH_LONG).show();
+                            }
+
+
+                        } else {
+                            Toast.makeText(EncuestaActivity.this,"Debe seleccionar una persona de la lista",Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
+
+
+    }
+
+
+    public void DomicilioNoEncontradoClick (View v)
+    {
+
+        new AlertDialog.Builder(this)
+                    .setTitle("Domicilio no encontado.")
+                   .setMessage("Desea omitir esta encuesta por domicilio no encontrado?")
+                   .setIcon(android.R.drawable.ic_dialog_alert)
+                   .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int whichButton) {
+
+                           CPersona persona = (CPersona) lbPersonas.getSelectedItem();
+
+                           if (persona != null) {
+                               String r = EncuestaBE.CancelarEncuesta(persona, AudiotiraStatus.DOMICILIO_NO_ENCONTRADO,EncuestaActivity.this);
+                               if (r.equals("1"))
+                               {
+                                   ObtenerPersonasAEncuestar();
+                                   Toast.makeText(EncuestaActivity.this,"Encuesta modificada correctamente",Toast.LENGTH_LONG).show();
+                                                                  }else
+                               {
+                                   Toast.makeText(EncuestaActivity.this,"Ocurrio un error al modificar la encuesta.",Toast.LENGTH_LONG).show();
+                               }
+
+
+                           } else {
+                               Toast.makeText(EncuestaActivity.this,"Debe seleccionar una persona de la lista",Toast.LENGTH_LONG).show();
+
+                           }
+                       }
+                   })
+                 .setNegativeButton(android.R.string.no, null).show();
+
+
+
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
