@@ -386,8 +386,7 @@ public class WsConsume {
             InputStream stream = response.getEntity().getContent();
             String json = convertInputStreamToString(stream);
             res= json;
-        }
-        catch (Exception ex){
+        }        catch (Exception ex){
             res="0";
         }
         return  res;

@@ -14,10 +14,18 @@ public class GpsHandler  implements LocationListener{
     private LocationManager locationManager;
     private Context context;
 
+
+
     public  GpsHandler(Context c)
     {
-        locationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
+         locationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,3000,10,this);
+    }
+
+    public  boolean isGpsEnabled ()
+    {
+         boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return  enabled;
     }
 
     public double getLatitude()

@@ -1,24 +1,20 @@
 package org.saeta.activities;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Debug;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,12 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import org.saeta.activities.R;
-import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
 import org.saeta.entities.GPSTracker;
+import org.saeta.entities.GpsHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +91,27 @@ public class FinalEncuestaActivity extends ActionBarActivity {
 
     public void FinalizarEncuestaClick(View v)
     {
-        GetDialog();
+        GpsHandler handler = new GpsHandler(FinalEncuestaActivity.this);
+        boolean gpsEnabled = handler.isGpsEnabled();
+
+        if (!gpsEnabled)
+        {
+           Toast.makeText(FinalEncuestaActivity.this,"Debe de activar el gps para continuar",Toast.LENGTH_LONG).show();
+
+        }
+        else
+        {
+            GetDialog();
+        }
+
+    }
+
+
+    @Override
+    public   void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
     }
 
 

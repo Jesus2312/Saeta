@@ -110,45 +110,44 @@ return  res;
             ArrayList<CPersona> cPersonasCanceladas = new EncustaDAL().ObtenerPersonasCanceladas(context);
             ArrayList<CEncuesta> encuestasCanceladas = new ArrayList<CEncuesta>();
 
-            for(CPersona p : cPersonasCanceladas)
-            {
-               // Obterner coordenadas
-               SaetaLocation loc = new EncustaDAL(context).getCancelLocation(p.getIdDetectado());
-               CEncuesta encuesta = new CEncuesta();
-               encuesta=  new EncustaDAL().GetEncuestaPorPersonaCancelada(p, context);
-                encuesta.IdDetectado = String.valueOf(p.getIdDetectado());
-               encuesta.Latitud = loc.getLatitud();
-               encuesta.Longitud = loc.getLongitud();
-               encuesta.Status =2;  // default traerlo del obtener personas canceladas
-               encuestasCanceladas.add(encuesta);
+            if (cPersonasCanceladas!= null) {
+                for (CPersona p : cPersonasCanceladas) {
+                    // Obterner coordenadas
+                    SaetaLocation loc = new EncustaDAL(context).getCancelLocation(p.getIdDetectado());
+                    CEncuesta encuesta = new CEncuesta();
+                    encuesta = new EncustaDAL().GetEncuestaPorPersonaCancelada(p, context);
+                    encuesta.IdDetectado = String.valueOf(p.getIdDetectado());
+                    encuesta.Latitud = loc.getLatitud();
+                    encuesta.Longitud = loc.getLongitud();
+                    encuesta.Status = 2;  // default traerlo del obtener personas canceladas
+                    encuestasCanceladas.add(encuesta);
+                }
+
+
+                for (CEncuesta i : encuestasCanceladas) {
+                    ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+                    params.add(new BasicNameValuePair("IdEncuesta", i.getIdEncuesta()));
+                    params.add(new BasicNameValuePair("Encuesta", i.Encuesta));
+                    params.add(new BasicNameValuePair("IdProceso", i.IdProceso));
+                    params.add(new BasicNameValuePair("IdDetectado", i.IdDetectado));
+                    params.add(new BasicNameValuePair("Municipio", i.Municipio));
+                    params.add(new BasicNameValuePair("Paterno", i.Paterno));
+                    params.add(new BasicNameValuePair("Materno", i.Materno));
+                    params.add(new BasicNameValuePair("Nombre", i.Nombre));
+                    params.add(new BasicNameValuePair("Telefono1", i.Telefono1));
+                    params.add(new BasicNameValuePair("Telefono2", i.Telefono2));
+                    params.add(new BasicNameValuePair("Telefono3", i.Telefono3));
+                    params.add(new BasicNameValuePair("Preguntas", ""));
+                    params.add(new BasicNameValuePair("LatitudAuditoria", i.Latitud));
+                    params.add(new BasicNameValuePair("LongitudAuditoria", i.Longitud));
+                    params.add(new BasicNameValuePair("EstatusAuditoria", String.valueOf(i.Status)));
+                    params.add(new BasicNameValuePair("koEstatusAuditoria", String.valueOf(i.Status)));
+
+                    WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
+                    consume.setParameters(params);
+                    consume.doHttpsGetCall(i);
+                }
             }
-
-
-            for (CEncuesta i : encuestasCanceladas)
-            {
-                ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("IdEncuesta",i.getIdEncuesta()));
-                params.add(new BasicNameValuePair("Encuesta",i.Encuesta));
-                params.add(new BasicNameValuePair("IdProceso", i.IdProceso));
-                params.add(new BasicNameValuePair("IdDetectado", i.IdDetectado));
-                params.add( new BasicNameValuePair("Municipio", i.Municipio));
-                params.add(new BasicNameValuePair("Paterno",i.Paterno));
-                params.add(new BasicNameValuePair("Materno", i.Materno));
-                params.add(new BasicNameValuePair("Nombre", i.Nombre));
-                params.add(new BasicNameValuePair("Telefono1", i.Telefono1));
-                params.add(new BasicNameValuePair("Telefono2",i.Telefono2));
-                params.add(new BasicNameValuePair("Telefono3", i.Telefono3));
-                params.add(new BasicNameValuePair("Preguntas",""));
-                params.add(new BasicNameValuePair("LatitudAuditoria", i.Latitud));
-                params.add(new BasicNameValuePair("LongitudAuditoria", i.Longitud));
-                params.add(new BasicNameValuePair("EstatusAuditoria", String.valueOf(i.Status)));
-                params.add(new BasicNameValuePair("koEstatusAuditoria",String.valueOf(i.Status)));
-
-                WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
-                consume.setParameters(params);
-                consume.doHttpsGetCall(i);
-            }
-
             return  "1";
         }
         catch (Exception d )
@@ -165,26 +164,30 @@ return  res;
         String result="";
         try {
 
-            // Subir Encuestas canceladas
-
-            SubirEncuestasCanceladas(context);
-
-
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // excluye los campos que solo se uan en ambito de la app
-            ArrayList<CEncuesta> encuestas = new EncustaDAL(context).ObtenerEncuestasRealizadas();
-            ArrayList<String> jsonArray = new ArrayList<String>();
-
-            if (encuestas!= null) {
-                for (CEncuesta e : encuestas) {
-
-                    String encuestasJson = gson.toJson(e);
-                    jsonArray.add(encuestasJson);
-                    WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
-                    consume.makeHttpsGetCall(e);
-
-                }
+            String subirEncuestasRes;
+            subirEncuestasRes= SubirEncuestasCanceladas(context);
+            if (!subirEncuestasRes.equals("1"))
+            {
+                result ="2";
             }
-            result= "1";
+            else
+            {
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create(); // excluye los campos que solo se uan en ambito de la app
+                ArrayList<CEncuesta> encuestas = new EncustaDAL(context).ObtenerEncuestasRealizadas();
+                ArrayList<String> jsonArray = new ArrayList<String>();
+
+                if (encuestas != null) {
+                    for (CEncuesta e : encuestas) {
+
+                        String encuestasJson = gson.toJson(e);
+                        jsonArray.add(encuestasJson);
+                        WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
+                        consume.makeHttpsGetCall(e);
+
+                    }
+                }
+                result= "1";
+            }
         }
         catch (Exception d)
         {

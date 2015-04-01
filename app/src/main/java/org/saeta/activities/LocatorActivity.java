@@ -77,7 +77,8 @@ public class LocatorActivity extends Activity {
         try
         {
             // si  ya existe un mapa entonces eliminarlo
-           filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
+         filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
+       //    filename = getFilesDir().getAbsolutePath()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
             File f = new File(filename);
            if (f.exists())
            {               f.delete();
@@ -107,12 +108,15 @@ public class LocatorActivity extends Activity {
     {
         try
         {
-            String filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
+             String filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
+            // String filename=getFilesDir().getAbsolutePath()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
             File fImage = new File( filename);
             if (fImage.exists())
             {
-                String url = "file:/"+ filename;
-                webView.loadUrl(url);
+                String furi = "file://"+ filename;
+                String html= "<html><head></head><body> <img src=\""+furi+"\"</body></html>";
+                webView.loadDataWithBaseURL("",html,"text/html","utf-8","");
+                // webView.loadUrl(url);
             }
         }
         catch (Exception d ) {
@@ -126,7 +130,8 @@ public class LocatorActivity extends Activity {
     {
         String imageFileName = path;
         File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
+              Environment.DIRECTORY_PICTURES);
+       // File storageDir = getFilesDir().getParentFile();
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */

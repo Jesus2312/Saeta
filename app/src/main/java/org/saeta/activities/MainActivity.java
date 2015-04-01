@@ -1,17 +1,17 @@
 package org.saeta.activities;
 
-import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +28,7 @@ import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
-import org.saeta.webservice.RestUtil;
+import org.saeta.entities.GpsHandler;
 import org.saeta.webservice.WsConsume;
 
 import java.util.ArrayList;
@@ -36,6 +36,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
 
+
+    private final static  int GPS_TURN_ON_REQUEST= 0;
 
     //Controls Declarations.
     Button LoginButton;
@@ -91,6 +93,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
          InitializeControls();
+        RequestGpsOn();
 
     }
 
@@ -102,6 +105,37 @@ public class MainActivity extends ActionBarActivity {
         LblUserName = (EditText) findViewById(R.id.TbUserName);
 
     }
+
+
+    private  void RequestGpsOn ()
+    {
+
+        GpsHandler handler = new GpsHandler(MainActivity.this);
+        boolean gpsEnabled = handler.isGpsEnabled();
+
+        if (!gpsEnabled) {
+            new AlertDialog.Builder(this)
+                    .setTitle("GPS Requerido")
+                    .setMessage("Esta aplicacion requiere tener habilitado el GPS, desea activarlo?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                            Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(i);
+
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).show();
+        }
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -133,6 +167,13 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public   void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
+      }
 
     public void TestHttps ()
     {

@@ -2,6 +2,7 @@ package org.saeta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -204,6 +205,13 @@ public class AppMenuActivity extends ActionBarActivity {
         }
     }
 
+
+    @Override
+    public   void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
+    }
     private String PostRespuestas ()
     {
         //cagado
@@ -304,8 +312,13 @@ public class AppMenuActivity extends ActionBarActivity {
                  break;
                 case 1:
                     dialog.dismiss();
-                    if( msg=="1")
-                    Toast.makeText(AppMenuActivity.this,"Auditorias subidas correctamente",Toast.LENGTH_LONG).show();
+                    if( msg=="1") {
+                        Toast.makeText(AppMenuActivity.this, "Auditorias subidas correctamente", Toast.LENGTH_LONG).show();
+                    }
+                    else if (msg=="2")
+                    {
+                        Toast.makeText(AppMenuActivity.this,"Error al subir auditorias omitidas",Toast.LENGTH_LONG).show();
+                    }
                     else
                         Toast.makeText(AppMenuActivity.this,"Error: "+ msg,Toast.LENGTH_LONG).show();
                     break;

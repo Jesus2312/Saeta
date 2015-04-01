@@ -18,7 +18,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|layoutDirection"
             android:label="SAETA"
+
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +34,8 @@
         </activity>
         <activity
             android:name=".EncuestaActivity"
-            android:label="SAETA" >
+            android:label="SAETA"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="org.saeta.EncuestaActivity" />
 
@@ -50,7 +53,9 @@
         </activity>
         <activity
             android:name=".AppMenuActivity"
-            android:label="SAETA" >
+            android:label="SAETA"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|layoutDirection"
+            >
             <intent-filter>
                 <action android:name="org.saeta.MenuApp" />
 
@@ -59,7 +64,9 @@
         </activity>
         <activity
             android:name=".FinalEncuestaActivity"
-            android:label="SAETA" >
+            android:label="SAETA"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|layoutDirection"
+            >
             <intent-filter>
                 <action android:name="org.saeta.FinalEncuesta" />
 

@@ -67,6 +67,10 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         rcbutton.performClick();
     }
 
+
+
+
+
     @Override
     public  void onBackPressed() {
         // Write your code here
@@ -76,6 +80,12 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         builder.setMessage("Desea salir de la encuesta actual?") .setPositiveButton("Yes", new  DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 UserSession.T_ENCUESTA= null;
+                if (mRecorder!= null)
+                {
+                    mRecorder.stop();
+                    mRecorder.release();
+                }
+
                 finish();
             }
         } ) .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -199,6 +209,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
         ArrayList<CRespuesta> respuestas =p.getRespuestas();
 
         rbGroup.removeAllViews();
+        rbGroup.clearCheck();
 
         for(CRespuesta f : respuestas)
         {
