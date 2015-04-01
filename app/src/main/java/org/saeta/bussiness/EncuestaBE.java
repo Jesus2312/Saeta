@@ -14,6 +14,7 @@ import org.saeta.entities.SaetaLocation;
 import org.saeta.webservice.WsConsume;
 
 import java.io.File;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import it.sauronsoftware.ftp4j.FTPClient;
@@ -150,6 +151,10 @@ return  res;
             }
             return  "1";
         }
+        catch (UnknownHostException u)
+        {
+            r="3";
+        }
         catch (Exception d )
         {
             r="0";
@@ -168,7 +173,7 @@ return  res;
             subirEncuestasRes= SubirEncuestasCanceladas(context);
             if (!subirEncuestasRes.equals("1"))
             {
-                result ="2";
+                result= subirEncuestasRes;
             }
             else
             {

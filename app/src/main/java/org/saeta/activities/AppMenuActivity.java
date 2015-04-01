@@ -23,6 +23,7 @@ import org.saeta.entities.CPersona;
 import org.saeta.webservice.WsConsume;
 
 import java.net.HttpURLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class AppMenuActivity extends ActionBarActivity {
@@ -172,6 +173,10 @@ public class AppMenuActivity extends ActionBarActivity {
             }
 
         }
+        catch (UnknownHostException u)
+        {
+            msg ="Error al descargar catalogo, verifique conexion a internet.";
+        }
         catch (Exception f)
         {
             msg="Error al descargar catalogo de encuestas (E009)";
@@ -302,7 +307,7 @@ public class AppMenuActivity extends ActionBarActivity {
 
                     if (msg!= "1")
                     {
-                        Toast.makeText(AppMenuActivity.this,"Error al descargar catalogo",Toast.LENGTH_LONG).show();
+                        Toast.makeText(AppMenuActivity.this,"Error al descargar catalogo detalles: "+ msg,Toast.LENGTH_LONG).show();
 
                     }
                     else
@@ -318,6 +323,10 @@ public class AppMenuActivity extends ActionBarActivity {
                     else if (msg=="2")
                     {
                         Toast.makeText(AppMenuActivity.this,"Error al subir auditorias omitidas",Toast.LENGTH_LONG).show();
+                    }
+                    else if (msg=="3")
+                    {
+                        Toast.makeText(AppMenuActivity.this,"Error al subir auditorias, verifique conexion a internet",Toast.LENGTH_LONG).show();
                     }
                     else
                         Toast.makeText(AppMenuActivity.this,"Error: "+ msg,Toast.LENGTH_LONG).show();

@@ -356,7 +356,7 @@ public class EncustaDAL {
 
             DataBaseHandler handler = new DataBaseHandler(context);
             String query = "SELECT * FROM SAETA_PERSONAS WHERE  ID_DETECTADO  not in (SELECT PERSONA_ID FROM SAETA_USUARIO_RESPUESTA" +
-                               "  WHERE TERMINADO =1 ) AND ENCUESTA_STATUS NOT IN (1,2,3);";
+                               "  WHERE TERMINADO =1 ) AND ENCUESTA_STATUS NOT IN (1,2,3) order by APELLIDO_PATERNO ASC;";
             Cursor cr = handler.GetCursor(query);
 
             if (cr.moveToFirst())

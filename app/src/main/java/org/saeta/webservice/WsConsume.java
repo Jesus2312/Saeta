@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.net.ssl.HostnameVerifier;
@@ -329,7 +330,7 @@ public class WsConsume {
         return  res;
     }
 
-    public String  doHttpsGetCall (CEncuesta e) throws UnsupportedEncodingException {
+    public String  doHttpsGetCall (CEncuesta e) throws Exception, UnsupportedEncodingException, UnknownHostException {
         String res = null;
         HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
         DefaultHttpClient client = new DefaultHttpClient();
@@ -356,8 +357,12 @@ public class WsConsume {
             String json = convertInputStreamToString(stream);
             res= json;
         }
+        catch (UnknownHostException u)
+        {
+            throw u;
+        }
         catch (Exception ex){
-            res="0";
+            throw   ex;
         }
         return  res;
     }
@@ -425,7 +430,7 @@ public class WsConsume {
     }
 
 
-    public String makeHttpsPostCall () throws UnsupportedEncodingException {
+    public String makeHttpsPostCall () throws UnsupportedEncodingException , UnknownHostException{
         String res = null;
         HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
         DefaultHttpClient client = new DefaultHttpClient();
@@ -449,6 +454,10 @@ public class WsConsume {
             String json = convertInputStreamToString(stream);
             res= json;
         }
+       catch (UnknownHostException u )
+       {
+           throw  u;
+       }
         catch (Exception ex){
             res="0";
         }

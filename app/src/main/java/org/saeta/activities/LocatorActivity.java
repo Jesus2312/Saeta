@@ -152,6 +152,37 @@ public class LocatorActivity extends Activity {
         return returnedBitmap;
     }
 
+    public void DeleteMap (View v)
+    {
+        DataBaseHandler hn = new DataBaseHandler(LocatorActivity.this);
+        FileOutputStream out = null;
+        String filename;
+        try
+        {
+            filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(PersonaId)+".png";
+            File f = new File(filename);
+            if (f.exists())
+            {
+                f.delete();
+                String q =" delete from persona_mapas where id_persona= '"+ PersonaId+"';";
+                hn.ExecuteQuery(q);
+                // Reload web view
+                InitializeBrowser();
+                Toast.makeText(LocatorActivity.this,"Mapa eliminado correctamente, se cargara de nuevo el localizador para guardar otro mapa",Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                Toast.makeText(LocatorActivity.this,"No hay mapa a eliminar.",Toast.LENGTH_LONG).show();
+            }
+
+        }
+        catch (Exception d)
+        {
+            Toast.makeText(LocatorActivity.this,"Error detalles: " +d.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
+
     private void InitializeBrowser()
     {
         webView = (WebView) findViewById(R.id.WbView);
