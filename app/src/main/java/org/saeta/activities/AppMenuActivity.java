@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -17,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import org.saeta.bussiness.CUrls;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.EncuestaBE;
+import org.saeta.bussiness.EncustaDAL;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
@@ -29,10 +32,23 @@ import java.util.ArrayList;
 public class AppMenuActivity extends ActionBarActivity {
 
     private ProgressDialog dialog;
+    TextView tbEncuestaTotal ;
+    TextView tbEncuestaTotalRealizas;
+    TextView  tbPendientes ;
+    Button descarga;
+    Button subir ;
+    Button iniciar ;
+    int total, realizadas, pendientes;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_menu);
+        tbEncuestaTotal = (TextView) findViewById(R.id.TbTotalEncuestas);
+        tbEncuestaTotalRealizas = (TextView) findViewById(R.id.TbTotalRealizadas);
+        tbPendientes = (TextView) findViewById(R.id.TbTotalPendientes);
+        GetInitialData();
     }
 
 
@@ -60,8 +76,46 @@ public class AppMenuActivity extends ActionBarActivity {
 
     public void  IniciarEncuestaClick (View v)
     {
-        startActivity(new Intent("org.saeta.EncuestaActivity"));
+        if (total >0)
+        {
+            startActivity(new Intent("org.saeta.EncuestaActivity"));
+        }
+        else
+        {
+            Toast.makeText(AppMenuActivity.this, "“Primero debe descargar datos y realizar encuestas", Toast.LENGTH_LONG).show();
+        }
+
+
     }
+
+    private void GetInitialData ()
+    {
+        try
+        {
+            EncustaDAL dal = new EncustaDAL(AppMenuActivity.this);
+
+              total = dal.getTotalEncuestas();
+
+             realizadas = dal.getTotalEncuestasRealizadas();
+             pendientes = total - realizadas;
+
+            tbEncuestaTotal.setText("Total de cuestionarios: " +total);
+            tbEncuestaTotalRealizas.setText("Cuestionarios aplicados: "+ realizadas);
+            tbPendientes.setText("Cuestionarios pendientes: " +pendientes);
+
+            // deshabilitar controles
+              if (total <=0) {
+
+              }
+
+        }
+        catch (Exception t)
+        {
+            Toast.makeText(AppMenuActivity.this,"Error detalles: " + t.getMessage() ,Toast.LENGTH_LONG ).show();
+        }
+    }
+
+
 
     public  void DescargaEncuestasClick(View v)
     {
@@ -112,7 +166,14 @@ public class AppMenuActivity extends ActionBarActivity {
 
     public void SubirEncuestasClick(View c)
     {
-        new asyncHelper(1).execute();
+
+        if ( total>0 ) {
+            new asyncHelper(1).execute();
+        }
+        else
+        {
+            Toast.makeText(AppMenuActivity.this, "“Primero debe descargar datos y realizar encuestas",Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -193,6 +254,7 @@ public class AppMenuActivity extends ActionBarActivity {
         if (UserSession.SAVE_OK_FLAG==1)
         {
             Toast.makeText(this, "Encuesta guardada correctamente ",Toast.LENGTH_LONG).show();
+            GetInitialData();
             UserSession.SAVE_OK_FLAG =-1;
         }
         else  if (UserSession.SAVE_OK_FLAG ==0)
@@ -286,10 +348,12 @@ public class AppMenuActivity extends ActionBarActivity {
             {
                 case  0:
                    msg= DescargarEncuestas();
+                    GetInitialData();
                     break;
 
                 case 1:
                    msg= PostRespuestas();
+                    GetInitialData();
                     break;
 
             }

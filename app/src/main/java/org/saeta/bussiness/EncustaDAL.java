@@ -348,6 +348,67 @@ public class EncustaDAL {
         return result;
     }
 
+
+    public int  getTotalEncuestasRealizadas () throws  Exception
+    {
+        int resp =0 ;
+        try
+        {
+            DataBaseHandler handler = new DataBaseHandler(this.context);
+            String query =" SELECT COUNT (distinct PERSONA_ID) FROM SAETA_USUARIO_RESPUESTA; ";
+            Cursor c ;
+            c = handler.GetCursor(query);
+
+            if (c!= null)
+            {
+                   if(c.moveToFirst()) {
+                       resp =  SaetaUtils.tryIntParse(c.getString(0));
+                   }
+                else
+                   {
+                       resp = 0;
+                   }
+            }
+
+        }
+        catch (Exception f)
+        {
+            throw  f;
+        }
+        return resp;
+    }
+
+    public  int getTotalEncuestas () throws  Exception
+    {
+        int res = 0 ;
+        try
+        {
+            DataBaseHandler handler = new DataBaseHandler(this.context);
+            String query = " Select count (*) from SAETA_PERSONAS";
+
+            Cursor c ;
+
+            c = handler.GetCursor(query);
+
+            if (c!= null) {
+                    if (c.moveToFirst()) {
+                        res = SaetaUtils.tryIntParse(c.getString(0));
+                    }
+                else
+                    {
+                        res = 0;
+
+                    }
+            }
+
+        }
+        catch (Exception f ) {
+           throw  f ;
+        }
+        return res ;
+
+    }
+
     public ArrayList<CPersona> ObtenerPersonasAEncuestar( Context context) throws  Exception
     {
         ArrayList<CPersona> arrayResult = null;

@@ -1,17 +1,29 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
     tools:context="org.saeta.activities.AppMenuActivity"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView2"
         android:background="@drawable/cabezal" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Descargar Datos"
+        android:id="@+id/BtDescarga"
+        android:layout_gravity="center_horizontal"
+        android:onClick="DescargaEncuestasClick" />
 
     <Button
         android:layout_width="fill_parent"
@@ -22,20 +34,62 @@
         android:nestedScrollingEnabled="false"
         android:onClick="IniciarEncuestaClick" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Descargar Datos"
-        android:id="@+id/button3"
-        android:layout_gravity="center_horizontal"
-        android:onClick="DescargaEncuestasClick" />
+
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Subir Auditorias"
+        android:text="Subir Datos"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"
         android:onClick="SubirEncuestasClick" />
 
-</LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/linearLayout"
+        android:orientation="vertical"
+        android:textAlignment="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Total de cuestionarios: 0"
+            android:id="@+id/TbTotalEncuestas"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Cuestionarios aplicados: 0"
+            android:id="@+id/TbTotalRealizadas"
+            android:layout_alignBottom="@+id/TbTotalEncuestas"
+            android:layout_alignLeft="@+id/TbTotalEncuestas"
+            android:layout_alignStart="@+id/TbTotalEncuestas"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Cuestionarios pendientes:0"
+            android:id="@+id/TbTotalPendientes"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
