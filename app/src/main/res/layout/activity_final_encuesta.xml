@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageButton"
-        android:background="@drawable/cabezal" />
+        android:background="@drawable/ic_cabezal_b" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,21 +33,32 @@
         android:text="Tomar Fotografia"
         android:id="@+id/button7"
         android:layout_gravity="center_horizontal"
-        android:onClick="capturarFoto" />
+        android:onClick="capturarFoto"
+        android:background="#ff2873ec"
+        android:textStyle="bold"
+        android:textColor="#fff8fafe" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Tomar Video"
         android:id="@+id/BtRecordVideo"
+        android:textStyle="bold"
         android:layout_gravity="center_horizontal"
-        android:onClick="capturarVideo" />
+        android:onClick="capturarVideo"
+        android:background="#ff2873ec"
+        android:layout_marginTop="10dp"
+        android:textColor="#fffffefa" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Guardar y Finalizar"
+        android:textStyle="bold"
         android:id="@+id/button9"
         android:layout_gravity="center_horizontal"
-        android:onClick="FinalizarEncuestaClick" />
+        android:onClick="FinalizarEncuestaClick"
+        android:background="#ff2873ec"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffffffff" />
 </LinearLayout>

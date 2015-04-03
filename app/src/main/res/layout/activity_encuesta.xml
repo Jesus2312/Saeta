@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView3"
-        android:background="@drawable/cabezal" />
+        android:background="@drawable/ic_cabezal_b" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -79,34 +79,35 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Iniciar Encuesta"
                 android:id="@+id/BtIniciarEncuesta"
                 android:layout_gravity="center_horizontal"
-                android:onClick="ClickIniciarEncuesta" />
+                android:onClick="ClickIniciarEncuesta"
+                android:background="@mipmap/ic_bt_realizar_encuesta" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Localizar"
                 android:id="@+id/btLocator"
-                android:onClick="LocatorClick" />
+                android:onClick="LocatorClick"
+                android:background="@drawable/ic_bt_localizar"
+                android:layout_marginTop="10dp" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Domicilio no encontrado"
                 android:id="@+id/BtDomicilioNoEncontrado"
                 android:onClick="DomicilioNoEncontradoClick"
-                 />
+                android:background="@drawable/ic_bt_no_encontrado"
+                android:layout_marginTop="10dp" />
 
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="No Contesto"
                 android:id="@+id/BtNoConesto"
                 android:onClick="PersonaNoContestaClick"
-                />
+                android:background="@drawable/ic_bt_no_contesto"
+                android:layout_marginTop="10dp" />
 
 
         </LinearLayout>

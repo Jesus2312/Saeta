@@ -8,7 +8,8 @@
         android:orientation="vertical"
         android:gravity="top"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2">
 
     <ImageView
         android:layout_width="fill_parent"
@@ -20,29 +21,32 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Descargar Datos"
         android:id="@+id/BtDescarga"
         android:layout_gravity="center_horizontal"
-        android:onClick="DescargaEncuestasClick" />
+        android:onClick="DescargaEncuestasClick"
+        android:background="@drawable/ic_bt_download"
+        android:layout_marginTop="10dp" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Realizar Encuesta"
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal"
         android:nestedScrollingEnabled="false"
-        android:onClick="IniciarEncuestaClick" />
+        android:onClick="IniciarEncuestaClick"
+        android:background="@drawable/ic_bt_iniciar_encuesta"
+        android:layout_marginTop="10dp" />
 
 
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Subir Datos"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"
-        android:onClick="SubirEncuestasClick" />
+        android:onClick="SubirEncuestasClick"
+        android:background="@drawable/ic_bt_subir_auditorias"
+        android:layout_marginTop="10dp" />
 
     </LinearLayout>
 
@@ -88,8 +92,6 @@
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
-
-
 
 
 </RelativeLayout>

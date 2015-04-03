@@ -52,8 +52,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Guardar Imagen"
+         android:background="#ff2873ec"
+         android:textStyle="bold"
         android:id="@+id/BtGuardarImagen"
-        android:onClick="GuardarMapa" />
+        android:onClick="GuardarMapa"
+         android:textColor="#ffffffff" />
 
     <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/WbView"
@@ -66,7 +69,10 @@
         android:layout_height="wrap_content"
         android:text="Eliminar Mapa"
         android:id="@+id/BtEliminarMapa"
-        android:onClick="DeleteMap" />
+        android:background="#ff2873ec"
+        android:textStyle="bold"
+        android:onClick="DeleteMap"
+        android:textColor="#ffffffff" />
      <!--</LinearLayout>-->
  <!--</ScrollView>-->
 
