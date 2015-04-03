@@ -348,12 +348,12 @@ public class AppMenuActivity extends ActionBarActivity {
             {
                 case  0:
                    msg= DescargarEncuestas();
-                    GetInitialData();
+
                     break;
 
                 case 1:
                    msg= PostRespuestas();
-                    GetInitialData();
+
                     break;
 
             }
@@ -396,6 +396,7 @@ public class AppMenuActivity extends ActionBarActivity {
                         Toast.makeText(AppMenuActivity.this,"Error: "+ msg,Toast.LENGTH_LONG).show();
                     break;
  }
+            GetInitialData();
         }
     }
 }
