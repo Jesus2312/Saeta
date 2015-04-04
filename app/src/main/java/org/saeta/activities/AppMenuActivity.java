@@ -1,8 +1,11 @@
 package org.saeta.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -281,11 +284,23 @@ public class AppMenuActivity extends ActionBarActivity {
     }
     private String PostRespuestas ()
     {
-        //cagado
-       ////Debug.waitForDebugger();
-        EncuestaBE.FilesDir = getFilesDir();
-        String r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
-        return  r;
+        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nf = manager.getActiveNetworkInfo();
+        String r;
+        if (nf!= null)
+        {
+            EncuestaBE.FilesDir = getFilesDir();
+            r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
+
+        }
+        else
+        {
+           r="3";
+            //Toast.makeText(AppMenuActivity.this,"No se pueden subir encuestas, verifique contexion a internet",Toast.LENGTH_LONG).show();
+        }
+
+        return r;
+
      }
 
     private void GuardarCatalogoPersonas (ArrayList<CPersona> personas)

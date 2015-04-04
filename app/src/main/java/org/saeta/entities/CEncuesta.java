@@ -203,44 +203,8 @@ public class CEncuesta {
             byte[] audio = null;
             byte[] video = null;
             byte[] foto = null;
-            // guardar audio
 
-            if (this.VideoUrl != "" || this.AudioUrl != "" || this.PhotoUrl!="") {
-//                // coneitene audio file
-//                if (this.AudioUrl != "") {
-//                    audio = readFile(this.AudioUrl);
-////                    File file = new File(this.AudioUrl);
-////                    InputStream fis = new FileInputStream(file);
-////                    BufferedInputStream bis = new BufferedInputStream(fis, 32768);
-////                    ByteArrayBuffer baf = new ByteArrayBuffer(32768);
-////                    int current = 0;
-////                    while ((current = bis.read()) != -1) {
-////                        baf.append((byte) current);
-////                    }
-////                    audio = baf.toByteArray();
-//
-//                }
-//
-//                if (this.PhotoUrl!="")
-//                {
-//                    foto= readFile(this.PhotoUrl);
-//                }
-//
-//                if (this.VideoUrl != "") {
-
-                  //  video = readFile(this.VideoUrl);
-//                        //File file = new File(p.VideoUrl);
-//                        FileInputStream fin= new FileInputStream(this.VideoUrl);
-//                       // InputStream fis = new FileInputStream(file);
-//                        BufferedInputStream bis = new BufferedInputStream(fin,32768);
-//                        ByteArrayBuffer baf = new ByteArrayBuffer(32768);
-//                        int current = 0;
-//                        while ((current = bis.read()) != -1) {
-//                            baf.append((byte) current);
-//                        }
-//                        video = baf.toByteArray();
-
-
+         if (this.VideoUrl != "" || this.AudioUrl != "" || this.PhotoUrl!="") {
                 ContentValues cv = new ContentValues();
                 cv.put("IDENCUESTA", this.getIdEncuesta());
                 cv.put("ID_DETECTADO", idDetectado);

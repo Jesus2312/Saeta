@@ -1,6 +1,7 @@
 package org.saeta.bussiness;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -187,13 +188,59 @@ return  res;
                         String encuestasJson = gson.toJson(e);
                         jsonArray.add(encuestasJson);
                         WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
-                        consume.makeHttpsGetCall(e);
+                        String op= consume.makeHttpsGetCall(e);
+                        if (!op.equals("0")) {
+
+                            // Obtener las URls de los archivos multimedia para eliminar.
+                            String query =" select PHOTO_DATA, AUDIO_DATA, VIDEO_DATA FROM ENCUESTA_MEDIA WHERE IDENCUESTA ="+ e.getIdEncuesta()+";";
+                            Cursor crMedia = null;
+                            DataBaseHandler handler = new DataBaseHandler(context);
+                            crMedia = handler.GetCursor(query);
+
+                            if (crMedia!= null) {
+                                while (crMedia.moveToNext()) {
+                                    String audio= null,video = null, foto = null;
+                                    audio = crMedia.getString(1);
+                                    video = crMedia.getString(2);
+                                    foto = crMedia.getString(0);
+
+                                    if (audio!= null) {
+                                        File f = new File(audio);
+                                        if (f.exists())
+                                        {               f.delete();
+
+                                        }
+
+                                    }
+                                    if (video!= null) {
+                                        File f = new File(video);
+                                        if (f.exists())
+                                        {               f.delete();
+
+                                        }
+
+                                    }
+
+                                    if (foto!= null) {
+                                        File f = new File(foto);
+                                        if (f.exists())
+                                        {               f.delete();
+
+                                        }
+
+                                    }
+                                }
+                                crMedia.close();
+                            }
+                        }
+
+                        }
 
                     }
                 }
                 result= "1";
             }
-        }
+
         catch (Exception d)
         {
             result="0";
