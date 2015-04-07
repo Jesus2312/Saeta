@@ -111,6 +111,31 @@ public class CPersona {
     private String Telefono1;
     private String Telefono2;
     private String Telefono3;
+    public String getLimite_audio() {
+        String res="60";
+        if ( limite_audio == null)
+        {
+           limite_audio= res;
+        }
+        else {
+            if (limite_audio.isEmpty())
+            {
+                limite_audio= res;
+            }
+
+        }
+        return limite_audio;
+    }
+
+    public void setLimite_audio(String limite) {
+
+        if (limite.equals("") || limite == null) {
+            limite = "60";
+        }
+        this.limite_audio = limite;
+    }
+
+    private String limite_audio;
 
     public int getEncuestaId() {
         return EncuestaId;

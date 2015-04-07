@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import org.saeta.bussiness.CUrls;
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.EncuestaBE;
 import org.saeta.bussiness.EncustaDAL;
+import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
@@ -122,7 +124,25 @@ public class AppMenuActivity extends ActionBarActivity {
 
     public  void DescargaEncuestasClick(View v)
     {
-       new asyncHelper(0).execute();
+        int exist=0;
+        String q= "Select count (*) from saeta_personas; ";
+
+        DataBaseHandler handler = new DataBaseHandler(AppMenuActivity.this);
+
+        Cursor cr = handler.GetCursor(q);
+
+        if (cr!= null) {
+            cr.moveToFirst();
+            exist = SaetaUtils.tryIntParse(cr.getString(0));
+        }
+
+        if (exist >0 )
+        {
+            Toast.makeText(AppMenuActivity.this,"“Primero debe aplicar las encuestas actuales y subirlas",Toast.LENGTH_LONG).show();
+        }
+        else {
+            new asyncHelper(0).execute();
+        }
     }
 
 
@@ -257,14 +277,14 @@ public class AppMenuActivity extends ActionBarActivity {
         if (UserSession.SAVE_OK_FLAG==1)
         {
             Toast.makeText(this, "Encuesta guardada correctamente ",Toast.LENGTH_LONG).show();
-            GetInitialData();
             UserSession.SAVE_OK_FLAG =-1;
         }
         else  if (UserSession.SAVE_OK_FLAG ==0)
         {
             Toast.makeText(this, "Error al guardar encuesta ",Toast.LENGTH_LONG).show();
-            UserSession.SAVE_OK_FLAG = -1;
+           UserSession.SAVE_OK_FLAG = -1;
         }
+        GetInitialData();
     }
 
     private  void GuardarEncuestas(CEncuesta[] encuestas)
@@ -292,6 +312,16 @@ public class AppMenuActivity extends ActionBarActivity {
             EncuestaBE.FilesDir = getFilesDir();
             r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
 
+            if (r.equals("1"))
+            {
+                DataBaseHandler handler = new DataBaseHandler(AppMenuActivity.this);
+                //String qdl = "DELETE FROM SAETA_USUARIO_RESPUESTA WHERE PERSONA_ID IN (SELECT  ID_DETECTADO FROM SAETA_PERSONAS WHERE UPLOADED_FLAG = 1);";
+                String qdl = "DELETE FROM SAETA_USUARIO_RESPUESTA;";
+                String qDelete = "DELETE FROM SAETA_PERSONAS WHERE UPLOADED_FLAG <>0 ";
+                handler.ExecuteQuery(qdl);
+                handler.ExecuteQuery(qDelete);
+            }
+
         }
         else
         {
@@ -302,6 +332,12 @@ public class AppMenuActivity extends ActionBarActivity {
         return r;
 
      }
+
+
+    public  void MapaGeneralClick (View v )
+    {
+        startActivity(new Intent("org.saeta.mapa_general"));
+    }
 
     private void GuardarCatalogoPersonas (ArrayList<CPersona> personas)
     {
@@ -316,11 +352,11 @@ public class AppMenuActivity extends ActionBarActivity {
             for(CPersona s : personas)
             {
                 //int rExist =SaetaUtils.QueryExistByCount("SELECT COUNT (*) FROM SAETA_PERSONAS WHERE ID_DETECTADO ="+Integer.toString(s.getIdDetectado())+";",this);
-               // if ( rExist> 0 ) {
+               // if ( rExist> 0 ) { // Agrega cero como defaut al catalogo recien descargado
                     String queryInsert = " INSERT INTO SAETA_PERSONAS VALUES ('" + s.getCalle() + "','" + s.getCodigoPostal() + "','" + s.getColonia() + "', " +
                             s.getDistritoFederal() + "," + s.getDistritoLocal() + ",'" + s.getEstado() + "'," + s.getIdDetectado() + " ,'" + s.getLatitud() + "','" + s.getLongitud() + "','" +
                             s.getManzana() + "','" + s.getMaterno() + "','" + s.getMunicipio() + "','" + s.getNombre() + "','" + s.getNumExterior() + "','" + s.getNumInterior() + "','" + s.getPaterno() + "','" +
-                            s.getSeccion() + "','" + s.getTelefono1() + "','" + s.getTelefono2() + "','" + s.getTelefono3() + "' ," + s.getEncuestaId() + ","+0+");";
+                            s.getSeccion() + "','" + s.getTelefono1() + "','" + s.getTelefono2() + "','" + s.getTelefono3() + "' ," + s.getEncuestaId() + ","+0+",'"+s.getLimite_audio()+"',0);";
 
                     handler.ExecuteQuery(queryInsert);
                 //}

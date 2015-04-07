@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="org.saeta.activities.AppMenuActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/ic_back_gris">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,7 +16,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView2"
-        android:background="@drawable/cabezal" />
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:background="@drawable/cabezal"
+        android:src="@drawable/ic_cabezal_b" />
 
 
     <Button
@@ -92,6 +96,19 @@
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Mapa General "
+        android:id="@+id/button3"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true"
+        android:textColor="#fff8fafe"
+        android:background="#ff2873ec"
+        android:textStyle="bold"
+        android:onClick="MapaGeneralClick" />
 
 
 </RelativeLayout>

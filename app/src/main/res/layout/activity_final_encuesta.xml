@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="org.saeta.activities.FinalEncuestaActivity"
-    android:id="@+id/MasterL">
+    android:id="@+id/MasterL"
+    android:background="@drawable/ic_back_gris">
 
     <ImageButton
         android:layout_width="fill_parent"

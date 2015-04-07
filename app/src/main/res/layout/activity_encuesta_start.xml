@@ -5,7 +5,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="org.saeta.activities.EncuestaStartActivity"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/ic_back_gris">
 
 
     <ScrollView
@@ -22,7 +23,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/LbNombrePersona" />
+                android:id="@+id/LbNombrePersona"
+                android:textColor="#ffffffff"
+                android:textStyle="bold"
+                android:background="#ff2a74ec" />
 
             <TextView
                 android:layout_width="wrap_content"

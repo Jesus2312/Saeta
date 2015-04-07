@@ -3,13 +3,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:background="@drawable/ic_back_azul">
+    android:background="@drawable/ic_back_gris">
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:id="@+id/imageView"
-       android:background="@drawable/ic_cabezal_b" />
+        android:src="@drawable/ic_cabezal_b" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,7 +20,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/BtRegister">
+        android:layout_above="@+id/BtRegister"
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="wrap_content"

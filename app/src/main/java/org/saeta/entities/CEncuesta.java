@@ -3,6 +3,7 @@ package org.saeta.entities;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 
 import com.google.gson.annotations.Expose;
 
@@ -168,6 +169,9 @@ public class CEncuesta {
             }
             // guardar los archivos enbebidos en storage local
             SaveMedia(c, personaEncuestada.getIdDetectado());
+
+            String supd =" update SAETA_PERSONAS set ENCUESTA_STATUS = 1 where  ID_DETECTADO ="+ personaEncuestada.getIdDetectado()+";";
+            handler.ExecuteQuery(supd);
             res = "1";
         } catch (Exception f) {
             res = "Error al guardar resultados encuesta (E011)";

@@ -2,6 +2,7 @@ package org.saeta.bussiness;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Environment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -148,6 +149,10 @@ return  res;
                     WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
                     consume.setParameters(params);
                     consume.doHttpsGetCall(i);
+
+                    DataBaseHandler handler = new DataBaseHandler(context);
+                    String updQuery = "UPDATE SAETA_PERSONAS SET UPLOADED_FLAG = 1 WHERE ID_DETECTADO="+ i.getIdDetectado()+";";
+                    handler.ExecuteQuery(updQuery);
                 }
             }
             return  "1";
@@ -192,7 +197,7 @@ return  res;
                         if (!op.equals("0")) {
 
                             // Obtener las URls de los archivos multimedia para eliminar.
-                            String query =" select PHOTO_DATA, AUDIO_DATA, VIDEO_DATA FROM ENCUESTA_MEDIA WHERE IDENCUESTA ="+ e.getIdEncuesta()+";";
+                            String query =" select PHOTO_DATA, AUDIO_DATA, VIDEO_DATA FROM ENCUESTA_MEDIA WHERE IDENCUESTA ="+ e.getIdEncuesta()+" and ID_DETECTADO ="+e.getIdDetectado()+";";
                             Cursor crMedia = null;
                             DataBaseHandler handler = new DataBaseHandler(context);
                             crMedia = handler.GetCursor(query);
@@ -229,9 +234,33 @@ return  res;
                                         }
 
                                     }
+
+
                                 }
                                 crMedia.close();
                             }
+                            try
+                            {
+                                // Obtener los el mapa para eliminar si es que existe
+                                String filename = Environment.getExternalStorageDirectory().toString()+"/MAPA_PERSONA_"+String.valueOf(e.getIdDetectado())+".png";
+                                File fMapa = new File( filename);
+
+                                if (fMapa.exists())
+                                {
+                                    fMapa.delete();
+                                }
+
+
+                                String updQuery = "UPDATE SAETA_PERSONAS SET UPLOADED_FLAG = 1 WHERE ID_DETECTADO="+ e.getIdDetectado()+";";
+                                handler.ExecuteQuery(updQuery);
+
+                            }
+                            catch (Exception f )
+                            {
+
+                            }
+
+
                         }
 
                         }

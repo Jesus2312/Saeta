@@ -2,13 +2,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/ic_back_gris">
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView3"
-        android:background="@drawable/ic_cabezal_b" />
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+       android:src="@drawable/ic_cabezal_b" />
 
     <ScrollView
         android:layout_width="match_parent"

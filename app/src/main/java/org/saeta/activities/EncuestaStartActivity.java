@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPersona;
@@ -183,6 +184,7 @@ public class EncuestaStartActivity extends ActionBarActivity  {
                 // Mostrar siguiente Actividad
                 UserSession.T_ENCUESTA = encuesta;
                 UserSession.T_PERSONA = persona;
+                StopRecordng();
                 startActivity(new Intent("org.saeta.FinalEncuesta"));
                 finish();
 //                String r =  encuesta.GuardarRespuestas(this,persona);
@@ -311,21 +313,21 @@ public class EncuestaStartActivity extends ActionBarActivity  {
                 mRecorder = new MediaRecorder();
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                mRecorder.setMaxDuration(10000);
+                int maxDuration = SaetaUtils.tryIntParse(persona.getLimite_audio())*1000;
+                mRecorder.setMaxDuration(maxDuration);
                 mRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
                     @Override
                     public void onInfo(MediaRecorder mr, int what, int extra) {
-                        if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED)
-                        {
+                        if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
                             rcbutton.setText("Grabacion detenida");
                             rcbutton.setEnabled(false);
                             mRecorder.stop();
                             mRecorder.release();
-                            mRecorder= null;
+                            mRecorder = null;
                             isRecording = false;
                             //Guardar ruta del archivo
-                            encuesta.AudioUrl=fname;
-                            Toast.makeText(EncuestaStartActivity.this,"Grabacion alcanzo maximo de tiempo",Toast.LENGTH_LONG).show();
+                            encuesta.AudioUrl = fname;
+                            Toast.makeText(EncuestaStartActivity.this, "Grabacion alcanzo maximo de tiempo", Toast.LENGTH_LONG).show();
 
                         }
                     }

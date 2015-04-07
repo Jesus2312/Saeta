@@ -200,7 +200,8 @@ public class EncuestaActivity extends ActionBarActivity {
                             if (r.equals("1"))
                             {
                                 ObtenerPersonasAEncuestar();
-                                Toast.makeText(EncuestaActivity.this,"Encuesta modificada correctamente",Toast.LENGTH_LONG).show();
+                                Toast.makeText(EncuestaActivity.this,"Encuesta modificada correctamente",Toast.LENGTH_SHORT).show();
+                                finish();
                             }else
                             {
                                 Toast.makeText(EncuestaActivity.this,"Ocurrio un error al modificar la encuesta.",Toast.LENGTH_LONG).show();
@@ -236,7 +237,9 @@ public class EncuestaActivity extends ActionBarActivity {
                                if (r.equals("1"))
                                {
                                    ObtenerPersonasAEncuestar();
-                                   Toast.makeText(EncuestaActivity.this,"Encuesta modificada correctamente",Toast.LENGTH_LONG).show();
+                                   Toast.makeText(EncuestaActivity.this,"Encuesta modificada correctamente",Toast.LENGTH_SHORT).show();
+                                   finish();
+
                                                                   }else
                                {
                                    Toast.makeText(EncuestaActivity.this,"Ocurrio un error al modificar la encuesta.",Toast.LENGTH_LONG).show();

@@ -99,7 +99,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 " TELEFONO_2 TEXT, " +
                 " TELEFONO_3 TEXT, " +
                 " IDENCUESTA NUMBER," +
-                " ENCUESTA_STATUS DEFAULT 0 );";
+                " ENCUESTA_STATUS DEFAULT 0, " +
+                " LIMITE_AUDIO TEXT, " +
+                " UPLOADED_FLAG INTEGER );";
 
         String ct7 =" CREATE TABLE USER_LOGIN (" +
                 "TOKEN TEXT, " +

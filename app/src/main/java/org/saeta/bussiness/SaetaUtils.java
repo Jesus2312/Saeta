@@ -3,6 +3,10 @@ package org.saeta.bussiness;
 import android.content.Context;
 import android.database.Cursor;
 
+import org.saeta.entities.CPersona;
+
+import java.util.ArrayList;
+
 /**
  * Created by Jesus Lopez on 3/16/2015.
  */
@@ -59,5 +63,20 @@ public  class SaetaUtils {
             result=-1;
         }
         return result;
+    }
+
+    public  static String getGeneralMapMarkers (ArrayList<CPersona> personas)
+    {
+        String h ="";
+        String furl;
+        String url ="http://maps.google.com/maps/api/staticmap?" +
+                "zoom=auto&size=2000x2000&maptype=roadmap&";
+
+        for(CPersona p  :personas)
+        {
+            h+= "markers="+ p.getLatitud()+","+p.getLongitud()+"&";
+        }
+        url+= h;
+        return url;
     }
 }

@@ -355,7 +355,7 @@ public class EncustaDAL {
         try
         {
             DataBaseHandler handler = new DataBaseHandler(this.context);
-            String query =" SELECT COUNT (distinct PERSONA_ID) FROM SAETA_USUARIO_RESPUESTA; ";
+            String query =" SELECT COUNT (*) FROM SAETA_PERSONAS where ENCUESTA_STATUS <> 0; ";
             Cursor c ;
             c = handler.GetCursor(query);
 
@@ -447,6 +447,7 @@ public class EncustaDAL {
                 pTemp.setTelefono2(cr.getString(18));
                 pTemp.setTelefono3(cr.getString(19));
                 pTemp.setEncuestaId(SaetaUtils.tryIntParse(cr.getString(20)));
+                pTemp.setLimite_audio(cr.getString(22));
                 arrayResult.add(pTemp);
                 while (cr.moveToNext())
                 {
@@ -472,6 +473,7 @@ public class EncustaDAL {
                     pTemp.setTelefono2(cr.getString(18));
                     pTemp.setTelefono3(cr.getString(19));
                     pTemp.setEncuestaId(SaetaUtils.tryIntParse(cr.getString(20)));
+                    pTemp.setLimite_audio(cr.getString(22));
                     arrayResult.add(pTemp);
                 }
             }
