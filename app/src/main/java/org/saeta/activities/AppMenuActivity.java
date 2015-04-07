@@ -322,7 +322,7 @@ public class AppMenuActivity extends ActionBarActivity {
                 handler.ExecuteQuery(qDelete);
             }
 
-        }
+        }//
         else
         {
            r="3";
