@@ -295,7 +295,7 @@ public class AppMenuActivity extends ActionBarActivity {
         }
     }
 
-
+//
     @Override
     public   void onConfigurationChanged(Configuration newConfig)
     {
