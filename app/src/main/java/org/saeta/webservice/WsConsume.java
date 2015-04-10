@@ -11,6 +11,8 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -20,8 +22,9 @@ import org.json.JSONObject;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPregunta;
-
+import org.apache.http.entity.mime.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +33,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
@@ -102,6 +104,7 @@ public class WsConsume {
             }
 
         }
+
 
     }
 
@@ -294,6 +297,48 @@ public class WsConsume {
             return  null;
         }
         return  result;
+    }
+
+    public String makeMultipartHttpsCall(File file, String mimeType ) throws  UnsupportedEncodingException
+    {
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+        HttpPost httpPost = new HttpPost(this._url);
+        String x = "Bearer " + UserSession.TOKEN_KEY;
+        httpPost.setHeader("Authorization",x);
+        if (this.wsParameters.size()>0) {
+            httpPost.setEntity(new UrlEncodedFormEntity(this.wsParameters));
+        }
+
+        try
+        {           // httpPost.setEntity(new UrlEncodedFormEntity(l));
+           MultipartEntity mpEntity = new MultipartEntity();
+          ContentBody contentBody = new FileBody(file,mimeType);
+          mpEntity.addPart("userfile", contentBody);
+           httpPost.setEntity(mpEntity);
+            HttpResponse response = httpClient.execute(httpPost);
+            InputStream stream = response.getEntity().getContent();
+            String json = convertInputStreamToString(stream);
+            res= json;
+
+        }
+        catch (UnsupportedEncodingException g)
+        {
+            throw  g;
+        }
+        catch (Exception r)
+        {
+            res="0";
+        }
+        return res;
     }
 
 

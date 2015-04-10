@@ -208,11 +208,16 @@ return  res;
                                     audio = crMedia.getString(1);
                                     video = crMedia.getString(2);
                                     foto = crMedia.getString(0);
+                                    String urlm= CUrls.MULTIPART_UPLOAD_URL+e.getIdDetectado()+"/";
 
                                     if (audio!= null) {
                                         File f = new File(audio);
                                         if (f.exists())
-                                        {               f.delete();
+                                        {
+                                            urlm += "1";
+                                           WsConsume multipartCall = new WsConsume(urlm);
+                                           String fres= multipartCall.makeMultipartHttpsCall(f,CUrls.MIME_AUDIO);
+                                            //  f.delete();
 
                                         }
 
