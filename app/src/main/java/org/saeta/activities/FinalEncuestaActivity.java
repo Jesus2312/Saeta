@@ -245,7 +245,7 @@ public class FinalEncuestaActivity extends ActionBarActivity {
     {
         takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         takeVideoIntent.putExtra("android.intent.extra.durationLimit", 10);
-        takeVideoIntent.putExtra("EXTRA_VIDEO_QUALITY",0);
+        takeVideoIntent.putExtra(android.provider.MediaStore.EXTRA_VIDEO_QUALITY,0);
         if(takeVideoIntent.resolveActivity(getPackageManager())!=null)
         {
 

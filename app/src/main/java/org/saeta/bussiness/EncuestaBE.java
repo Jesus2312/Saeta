@@ -214,7 +214,7 @@ return  res;
                                         File f = new File(audio);
                                         if (f.exists())
                                         {
-                                            urlm += "1";
+                                            urlm =CUrls.MULTIPART_UPLOAD_URL+e.getIdDetectado()+"/1";
                                            WsConsume multipartCall = new WsConsume(urlm);
                                            String fres= multipartCall.makeMultipartHttpsCall(f,CUrls.MIME_AUDIO);
                                             //  f.delete();
@@ -225,7 +225,11 @@ return  res;
                                     if (video!= null) {
                                         File f = new File(video);
                                         if (f.exists())
-                                        {               f.delete();
+                                        {
+                                            urlm =CUrls.MULTIPART_UPLOAD_URL+e.getIdDetectado()+"/2";
+                                            WsConsume multipartCall = new WsConsume(urlm);
+                                            String fres= multipartCall.makeMultipartHttpsCall(f,CUrls.MIME_VIDEO);
+                                          // f.delete();
 
                                         }
 
@@ -234,13 +238,13 @@ return  res;
                                     if (foto!= null) {
                                         File f = new File(foto);
                                         if (f.exists())
-                                        {               f.delete();
-
+                                        {
+                                            urlm =CUrls.MULTIPART_UPLOAD_URL+e.getIdDetectado()+"/3";
+                                            WsConsume multipartCall = new WsConsume(urlm);
+                                            String fres= multipartCall.makeMultipartHttpsCall(f,CUrls.MIME_IMAGE);
+                                           //  f.delete();
                                         }
-
                                     }
-
-
                                 }
                                 crMedia.close();
                             }
@@ -255,17 +259,13 @@ return  res;
                                     fMapa.delete();
                                 }
 
-
                                 String updQuery = "UPDATE SAETA_PERSONAS SET UPLOADED_FLAG = 1 WHERE ID_DETECTADO="+ e.getIdDetectado()+";";
                                 handler.ExecuteQuery(updQuery);
-
                             }
                             catch (Exception f )
                             {
 
                             }
-
-
                         }
 
                         }

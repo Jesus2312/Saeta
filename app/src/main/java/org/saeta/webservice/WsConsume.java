@@ -11,6 +11,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -22,9 +23,14 @@ import org.json.JSONObject;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.CEncuesta;
 import org.saeta.entities.CPregunta;
-import org.apache.http.entity.mime.*;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
@@ -299,6 +306,103 @@ public class WsConsume {
         return  result;
     }
 
+
+    public String makeAndroidMultipart (File file, String mimeTpe ) throws  UnsupportedEncodingException
+    {
+        int maxBufferSize = 1 * 1024 * 1024;
+        String boundary =  "*****";
+        String crlf = "\r\n";
+        String twoHyphens = "--";
+        HttpsURLConnection httpsURLConnection ;
+        String res = null;
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        DefaultHttpClient client = new DefaultHttpClient();
+        SchemeRegistry registry = new SchemeRegistry();
+        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        registry.register(new Scheme("https", socketFactory, 443));
+        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+        HttpPost httpPost = new HttpPost(this._url);
+        String x = "Bearer " + UserSession.TOKEN_KEY;
+        httpPost.setHeader("Authorization",x);
+
+        //ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] imageBytes = getBytesFromFile(file);
+
+        // open a URL connection to the Servlet
+        ByteArrayInputStream fileInputStream = new ByteArrayInputStream(imageBytes);
+
+        try
+        {
+            String frmData = "form-data; name=\"Media\"; filename="+ file.getAbsolutePath();
+            URL url = new URL(this._url);
+            httpsURLConnection = (HttpsURLConnection) url.openConnection();
+            httpsURLConnection.setDoOutput(true);
+            httpsURLConnection.setRequestMethod("POST");
+            httpsURLConnection.setRequestProperty("Accept", "*/*");
+            httpsURLConnection.setRequestProperty("Authorization", "Bearer "+ UserSession.TOKEN_KEY);
+            httpsURLConnection.setRequestProperty("Connection", "Keep-Alive");
+            httpsURLConnection.setRequestProperty("Cache-Control", "no-cache");
+            httpsURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            DataOutputStream request = new DataOutputStream(httpsURLConnection.getOutputStream());
+            request.writeBytes(twoHyphens + boundary + crlf);
+            request.writeBytes("Content-Disposition: form-data; name=\"Media\";filename=\"" + file.getAbsolutePath() + "\"" + crlf);
+            request.writeBytes("Content-Type: " + mimeTpe);
+            request.writeBytes(crlf);
+
+
+            int bytesAvailable = fileInputStream.available();
+            int bufferSize=Math.min(bytesAvailable,maxBufferSize);
+
+            byte[] buffer = new byte[bufferSize];
+
+            int bytesRead = fileInputStream.read(buffer,0,bufferSize);
+
+            while (bytesRead > 0) {
+                request.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+            }
+
+
+            request.writeBytes(crlf);
+            request.writeBytes(twoHyphens + boundary + crlf);
+            request.flush();
+            request.close();
+
+            InputStream responseStream = httpsURLConnection.getInputStream();
+            String respuesta = convertInputStreamToString(responseStream);
+            System.out.println(respuesta);
+        }
+
+        catch (Exception r)
+        {
+            res="0";
+        }
+        return res;
+
+    }
+
+    private byte[] getBytesFromFile (File file)
+    {
+       int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        try {
+            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+            buf.read(bytes, 0, bytes.length);
+
+        } catch (FileNotFoundException e) {
+             bytes= null;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            bytes = null;
+        }
+      return bytes;
+    }
+
     public String makeMultipartHttpsCall(File file, String mimeType ) throws  UnsupportedEncodingException
     {
         String res = null;
@@ -320,14 +424,14 @@ public class WsConsume {
 
         try
         {           // httpPost.setEntity(new UrlEncodedFormEntity(l));
-           MultipartEntity mpEntity = new MultipartEntity();
+          MultipartEntity mpEntity = new MultipartEntity();
           ContentBody contentBody = new FileBody(file,mimeType);
           mpEntity.addPart("userfile", contentBody);
-           httpPost.setEntity(mpEntity);
-            HttpResponse response = httpClient.execute(httpPost);
-            InputStream stream = response.getEntity().getContent();
-            String json = convertInputStreamToString(stream);
-            res= json;
+          httpPost.setEntity(mpEntity);
+          HttpResponse response = httpClient.execute(httpPost);
+          InputStream stream = response.getEntity().getContent();
+          String json = convertInputStreamToString(stream);
+          res= json;
 
         }
         catch (UnsupportedEncodingException g)
