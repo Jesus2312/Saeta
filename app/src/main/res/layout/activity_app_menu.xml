@@ -9,49 +9,74 @@
         android:orientation="vertical"
         android:gravity="top"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout2">
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView2"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:background="@drawable/cabezal"
+            android:src="@drawable/ic_cabezal_b" />
 
-    <ImageView
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="top"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:background="@drawable/cabezal"
-        android:src="@drawable/ic_cabezal_b" />
-
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/BtDescarga"
-        android:layout_gravity="center_horizontal"
-        android:onClick="DescargaEncuestasClick"
-        android:background="@drawable/ic_bt_download"
-        android:layout_marginTop="10dp" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button2"
-        android:layout_gravity="center_horizontal"
-        android:nestedScrollingEnabled="false"
-        android:onClick="IniciarEncuestaClick"
-        android:background="@drawable/ic_bt_iniciar_encuesta"
-        android:layout_marginTop="10dp" />
+        android:id="@+id/linearLayout2"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
 
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal"
-        android:onClick="SubirEncuestasClick"
-        android:background="@drawable/ic_bt_subir_auditorias"
-        android:layout_marginTop="10dp" />
 
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/BtDescarga2"
+            android:onClick="DescargaEncuestasClick"
+            android:src="@drawable/ic_bt_download"
+            android:background="@android:color/transparent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="10dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2"
+            android:onClick="IniciarEncuestaClick"
+            android:src="@drawable/ic_bt_iniciar_encuesta"
+            android:background="@android:color/transparent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="10dp" />
+
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton3"
+            android:onClick="SubirEncuestasClick"
+            android:src="@drawable/ic_bt_subir_auditorias"
+            android:background="@android:color/transparent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="10dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton2"
+            android:onClick="MapaGeneralClick"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_bt_mapa"
+            android:background="@android:color/transparent" />
+
+    </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -96,19 +121,6 @@
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Mapa General "
-        android:id="@+id/button3"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/linearLayout2"
-        android:layout_centerHorizontal="true"
-        android:textColor="#fff8fafe"
-        android:background="#ff2873ec"
-        android:textStyle="bold"
-        android:onClick="MapaGeneralClick" />
 
 
 </RelativeLayout>

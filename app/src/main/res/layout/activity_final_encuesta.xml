@@ -6,11 +6,17 @@
     android:id="@+id/MasterL"
     android:background="@drawable/ic_back_gris">
 
+
+
     <ImageButton
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageButton"
         android:background="@drawable/ic_cabezal_b" />
+
+
+     <LinearLayout
+        style="@style/InnerLayout">
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,38 +34,25 @@
         android:id="@+id/textView16"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="fill_parent"
+    <ImageButton
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tomar Fotografia"
-        android:id="@+id/button7"
-        android:layout_gravity="center_horizontal"
-        android:onClick="capturarFoto"
-        android:background="#ff2873ec"
-        android:textStyle="bold"
-        android:textColor="#fff8fafe" />
+        style="@style/SaetaImageButton"
+        android:id="@+id/imageButton4"
+        android:src="@drawable/ic_bt_fotografia"
+        android:onClick="capturarFoto" />
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Tomar Video"
-        android:id="@+id/BtRecordVideo"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:onClick="capturarVideo"
-        android:background="#ff2873ec"
-        android:layout_marginTop="10dp"
-        android:textColor="#fffffefa" />
+    <ImageButton
+        style="@style/SaetaImageButton"
+        android:src="@drawable/ic_bt_video"
+        android:id="@+id/imageButton5"
+        android:onClick="capturarVideo" />
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Guardar y Finalizar"
-        android:textStyle="bold"
+    <ImageButton
+        style="@style/SaetaImageButton"
+        android:src="@drawable/ic_guardar_finalizar"
         android:id="@+id/button9"
-        android:layout_gravity="center_horizontal"
-        android:onClick="FinalizarEncuestaClick"
-        android:background="#ff2873ec"
-        android:layout_marginTop="10dp"
-        android:textColor="#ffffffff" />
+        android:onClick="FinalizarEncuestaClick" />
+     </LinearLayout>
+
 </LinearLayout>

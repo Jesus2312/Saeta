@@ -81,7 +81,7 @@ public class AppMenuActivity extends ActionBarActivity {
 
     public void  IniciarEncuestaClick (View v)
     {
-        if (total >0)
+        if (total>0)
         {
             startActivity(new Intent("org.saeta.EncuestaActivity"));
         }
@@ -336,7 +336,15 @@ public class AppMenuActivity extends ActionBarActivity {
 
     public  void MapaGeneralClick (View v )
     {
-        startActivity(new Intent("org.saeta.mapa_general"));
+
+        if(total>0 ) {
+
+            startActivity(new Intent("org.saeta.mapa_general"));
+        }
+        else
+        {
+            Toast.makeText(AppMenuActivity.this, "Primero debe descargar datos", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void GuardarCatalogoPersonas (ArrayList<CPersona> personas)

@@ -11,15 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.saeta.bussiness.DataBaseHandler;
 import org.saeta.bussiness.EncuestaBE;
-import org.saeta.bussiness.EncustaDAL;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.bussiness.UserSession;
 import org.saeta.entities.AudiotiraStatus;
@@ -40,7 +38,7 @@ public class EncuestaActivity extends ActionBarActivity {
     EditText tbMunicipio;
    // TextView lbEncuestasPendientes;
     EditText tbNombre;
-    Button btIniciarEncuesta ;
+    ImageButton btIniciarEncuesta ;
     EditText tbColonia;
     Spinner lbPersonas;
 
@@ -308,7 +306,8 @@ public class EncuestaActivity extends ActionBarActivity {
             tbMunicipio = (EditText) findViewById(R.id.TbMunicipio);
             lbTelefonos = (Spinner) findViewById(R.id.LbTelefonos);
            // lbEncuestas = (Spinner) findViewById(R.id.LbEncuestas);
-            btIniciarEncuesta = (Button) findViewById(R.id.BtIniciarEncuesta);
+            btIniciarEncuesta = (ImageButton) findViewById(R.id.BtIniciarEncuesta);
+            btIniciarEncuesta.setEnabled(false);
             lbPersonas = (Spinner) findViewById(R.id.LbPersonas);
             tbColonia = (EditText) findViewById(R.id.TbColonia);
 
@@ -322,7 +321,9 @@ public class EncuestaActivity extends ActionBarActivity {
                   ArrayList<CEncuesta> arr = null;
                     CPersona persona = (CPersona) lbPersonas.getSelectedItem();
                     // Obtener la encusta
-                   int eid = persona.getEncuestaId();                    try {                       arr = ObtenerEncuestas(eid);
+                   int eid = persona.getEncuestaId();
+                   try {
+                           arr = ObtenerEncuestas(eid);
 
                          if (arr != null) {
                              CEncuesta e = arr.get(0);

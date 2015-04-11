@@ -4,16 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import org.saeta.activities.R;
 import org.saeta.bussiness.EncuestaBE;
 import org.saeta.bussiness.SaetaUtils;
 import org.saeta.entities.CPersona;
@@ -144,6 +143,13 @@ public class MapaGeneralActivity extends ActionBarActivity {
 
                 ArrayList<CPersona> personas = null;
                 personas=EncuestaBE.ObtenerPersonasAEncuestar(MapaGeneralActivity.this);
+
+                if (personas== null || personas.size()<=0)
+                {
+                     Toast.makeText(MapaGeneralActivity.this,"No se han descargado datos para general el mapa", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String url = SaetaUtils.getGeneralMapMarkers(personas);
                 {
                     wb1.loadUrl(url);

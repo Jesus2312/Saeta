@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
     private final static  int GPS_TURN_ON_REQUEST= 0;
 
     //Controls Declarations.
-    Button LoginButton;
+   // Button LoginButton;
     Button RegisterButton;
     EditText LblUserName;
     EditText LblPassword;
@@ -99,8 +99,8 @@ public class MainActivity extends ActionBarActivity {
 
     private void InitializeControls ()
     {
-        LoginButton= (Button) findViewById(R.id.BtLogin);
-        RegisterButton = (Button) findViewById(R.id.BtRegister);
+        //LoginButton= (Button) findViewById(R.id.BtLogin);
+       // RegisterButton = (Button) findViewById(R.id.BtRegister);
         LblPassword = (EditText) findViewById(R.id.TbPassword);
         LblUserName = (EditText) findViewById(R.id.TbUserName);
 
