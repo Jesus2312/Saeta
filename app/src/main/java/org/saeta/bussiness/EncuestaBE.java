@@ -2,6 +2,7 @@ package org.saeta.bussiness;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.google.gson.Gson;
@@ -16,6 +17,7 @@ import org.saeta.entities.SaetaLocation;
 import org.saeta.webservice.WsConsume;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
  * Created by jlopez on 3/19/2015.
  */
 public class EncuestaBE {
-    public  static File FilesDir;
+    public static File FilesDir;
 
 
     public static  String CancelarEncuesta (CPersona p , int status ,Context context)
@@ -128,12 +130,14 @@ public class EncuestaBE {
     }
 
 
-    public  String SubirEncuestas (Context context)
+    public  String SubirEncuestas (Context context,AsyncTask task)
     {
-
+        Method method;
         String result="";
         try {
 
+            method = task.getClass().getMethod("ReportProgress",String.class);
+            method.invoke(task,"Subiendo Auditorias");
             String subirEncuestasRes;
             subirEncuestasRes= SubirEncuestasCanceladas(context);
             if (!subirEncuestasRes.equals("1"))
@@ -146,6 +150,7 @@ public class EncuestaBE {
                 ArrayList<CEncuesta> encuestas = new EncustaDAL(context).ObtenerEncuestasRealizadas();
                 ArrayList<String> jsonArray = new ArrayList<String>();
 
+
                 if (encuestas != null) {
                     for (CEncuesta e : encuestas) {
 
@@ -154,6 +159,7 @@ public class EncuestaBE {
                         WsConsume consume = new WsConsume("https://api.saeta.org.mx/auditoria/");
                         String op= consume.makeHttpsGetCall(e);
                         if (!op.equals("0")) {
+                            method.invoke(task,"Subiendo Archivos Multimedia");
 
                             // Obtener las URls de los archivos multimedia para eliminar.
                             String query =" select PHOTO_DATA, AUDIO_DATA, VIDEO_DATA FROM ENCUESTA_MEDIA WHERE IDENCUESTA ="+ e.getIdEncuesta()+" and ID_DETECTADO ="+e.getIdDetectado()+";";

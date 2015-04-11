@@ -210,6 +210,7 @@ public class AppMenuActivity extends ActionBarActivity {
         HttpURLConnection connection =null;
         try
         {
+
             WsConsume consume = new WsConsume("https://api.saeta.org.mx/Auditoria");
             String res = consume.makeHttpsPostCall();
 //            String uri="http://api.saeta.org.mx/Auditoria";
@@ -302,36 +303,6 @@ public class AppMenuActivity extends ActionBarActivity {
         super.onConfigurationChanged(newConfig);
 
     }
-    private String PostRespuestas ()
-    {
-        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo nf = manager.getActiveNetworkInfo();
-        String r;
-        if (nf!= null)
-        {
-            EncuestaBE.FilesDir = getFilesDir();
-            r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this);
-
-            if (r.equals("1"))
-            {
-                DataBaseHandler handler = new DataBaseHandler(AppMenuActivity.this);
-                //String qdl = "DELETE FROM SAETA_USUARIO_RESPUESTA WHERE PERSONA_ID IN (SELECT  ID_DETECTADO FROM SAETA_PERSONAS WHERE UPLOADED_FLAG = 1);";
-                String qdl = "DELETE FROM SAETA_USUARIO_RESPUESTA;";
-                String qDelete = "DELETE FROM SAETA_PERSONAS WHERE UPLOADED_FLAG <>0 ";
-                handler.ExecuteQuery(qdl);
-                handler.ExecuteQuery(qDelete);
-            }
-
-        }//
-        else
-        {
-           r="3";
-            //Toast.makeText(AppMenuActivity.this,"No se pueden subir encuestas, verifique contexion a internet",Toast.LENGTH_LONG).show();
-        }
-
-        return r;
-
-     }
 
 
     public  void MapaGeneralClick (View v )
@@ -375,6 +346,7 @@ public class AppMenuActivity extends ActionBarActivity {
     class asyncHelper extends AsyncTask<String,String,String >
     {
 
+
         private  int _action;
         private String msg;
 
@@ -384,6 +356,10 @@ public class AppMenuActivity extends ActionBarActivity {
         }
 
 
+        public  void ReportProgress (String mesage)
+        {
+            publishProgress(mesage);
+        }
         @Override
         protected void onPreExecute() {
             dialog= new ProgressDialog(AppMenuActivity.this);
@@ -411,6 +387,7 @@ public class AppMenuActivity extends ActionBarActivity {
                     break;
 
                 case 1:
+
                    msg= PostRespuestas();
 
                     break;
@@ -425,6 +402,7 @@ public class AppMenuActivity extends ActionBarActivity {
         {
             switch (_action)
             {
+
                 case  0:
                       dialog.dismiss();
 
@@ -456,6 +434,49 @@ public class AppMenuActivity extends ActionBarActivity {
                     break;
  }
             GetInitialData();
+        }
+
+
+        @Override
+        protected void onProgressUpdate(String... progress) {
+            super.onProgressUpdate(progress);
+                dialog.setMessage(progress[0]);
+              }
+
+        private String PostRespuestas ()
+        {
+            ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo nf = manager.getActiveNetworkInfo();
+            String r;
+            if (nf!= null)
+            {
+
+                publishProgress("Subiendo Encuestas...");
+                EncuestaBE.FilesDir = getFilesDir();
+                EncuestaBE be = new EncuestaBE();
+                r= new EncuestaBE().SubirEncuestas(AppMenuActivity.this,this);
+
+                if (r.equals("1"))
+                {
+
+                    publishProgress("Encuestas publicadas correctamente, limpiando registro local");
+                    DataBaseHandler handler = new DataBaseHandler(AppMenuActivity.this);
+                    //String qdl = "DELETE FROM SAETA_USUARIO_RESPUESTA WHERE PERSONA_ID IN (SELECT  ID_DETECTADO FROM SAETA_PERSONAS WHERE UPLOADED_FLAG = 1);";
+                    String qdl = "DELETE FROM SAETA_USUARIO_RESPUESTA;";
+                    String qDelete = "DELETE FROM SAETA_PERSONAS WHERE UPLOADED_FLAG <>0 ";
+                    handler.ExecuteQuery(qdl);
+                    handler.ExecuteQuery(qDelete);
+                }
+
+            }//
+            else
+            {
+                r="3";
+                //Toast.makeText(AppMenuActivity.this,"No se pueden subir encuestas, verifique contexion a internet",Toast.LENGTH_LONG).show();
+            }
+
+            return r;
+
         }
     }
 }
